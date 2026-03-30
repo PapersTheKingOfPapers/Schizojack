@@ -1,0 +1,1 @@
+In meshes folder goes the FBX, OBJ, and that stuff. NOT MATERIALS, OR TEXTURES, OR .BLEND FILES!

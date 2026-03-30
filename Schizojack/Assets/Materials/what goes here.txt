@@ -1,0 +1,1 @@
+In Materials goes .mat, unity's materials, and that stuff. NOT TEXTURES, NOT FBX, NOT SPRITES!

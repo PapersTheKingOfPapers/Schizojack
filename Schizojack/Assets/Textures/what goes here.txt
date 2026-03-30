@@ -1,0 +1,1 @@
+In textures folder goes .png, .jpg, .jpeg, .gif, and any other image file, NOT .MAT, MATERIALS, 2D SPRITE IMAGES, OR MODELS!

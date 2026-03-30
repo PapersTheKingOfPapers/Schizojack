@@ -1,0 +1,1 @@
+in the Textures/Sprites folder goes the sprites, particle effect images, and same file types as textures, NOT MATERIALS, NOT UNITY PARTICLE SYSTEMS, NOT ENVIRONMENT TEXTURES!

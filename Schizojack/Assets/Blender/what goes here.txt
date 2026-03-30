@@ -1,0 +1,1 @@
+In Blender folder goes .blend files, NOT FBX, MATERIALS, OR TEXTURES!
