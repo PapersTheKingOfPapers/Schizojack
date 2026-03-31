@@ -1299,6 +1299,8 @@ MonoBehaviour:
   gameStateText: {fileID: 581763846}
   hitCardButton: {fileID: 891707631}
   shuffleButton: {fileID: 2070269907}
+  CardPrefab: {fileID: 8726130458335063973, guid: b2f7fe082a6d9e643b075f0c4f2b7ef4, type: 3}
+  playerHandGO: {fileID: 174583728}
 --- !u!65 &1726870186
 BoxCollider:
   m_ObjectHideFlags: 0

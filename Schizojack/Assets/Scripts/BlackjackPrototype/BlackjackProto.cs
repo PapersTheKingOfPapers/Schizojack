@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using UnityEngine.Rendering.Universal;
 
 public class BlackjackProto : MonoBehaviour
 {
@@ -22,9 +23,9 @@ public class BlackjackProto : MonoBehaviour
         new Card(9,"A"), new Card(9,"B"), new Card(9,"C"), new Card(9,"D"),
         new Card(10,"A"), new Card(10,"B"), new Card(10,"C"), new Card(10,"D"),
         new Card(11,"A"), new Card(11,"B"), new Card(11,"C"), new Card(11,"D"),
-        new Card(12,"A"), new Card(12,"B"), new Card(12,"C"), new Card(12,"D"),
-        new Card(13,"A"), new Card(13,"B"), new Card(13,"C"), new Card(13,"D"),
-        new Card(14,"A"), new Card(14,"B"), new Card(14,"C"), new Card(14,"D")
+        new Card(10,"A",1), new Card(10,"B",1), new Card(10,"C",1), new Card(10,"D",1),
+        new Card(10,"A",2), new Card(10,"B",2), new Card(10,"C",2), new Card(10,"D",2),
+        new Card(10,"A",3), new Card(10,"B",3), new Card(10,"C",3), new Card(10,"D",3)
     };
 
     List<Card> _actualDeck = new List<Card>();
@@ -39,6 +40,9 @@ public class BlackjackProto : MonoBehaviour
     public Button shuffleButton;
 
     private bool _canShuffle = true;
+
+    public GameObject CardPrefab;
+    public GameObject playerHandGO;
 
     private int _playerDeckValue1 = 0; // Ace = 1
     private int _playerDeckValue2 = 0; // Ace = 11
@@ -103,6 +107,8 @@ public class BlackjackProto : MonoBehaviour
         {
             gameStateText.text = $"Your hand is worth {_playerDeckValue1} with an Ace worth 1, and {_playerDeckValue2} with an Ace worth 11";
         }
+
+        ShowPlayerHand();
     }
 
     public string CardsToString(List<Card> cards)
@@ -132,6 +138,76 @@ public class BlackjackProto : MonoBehaviour
         return deck.OrderBy(i => Guid.NewGuid()).ToList();
     }
 
+    public void ShowPlayerHand()
+    {
+        if(playerHandGO.transform.childCount != 0)
+        {
+            foreach (Transform child in playerHandGO.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+        
+        if(playerDeck.Count > 0)
+        {
+            for (int i = 0; i < playerDeck.Count; i++)
+            {
+                Vector3 tempPos = new Vector3(-(playerDeck.Count / 2) * (i / playerDeck.Count) * 75, 0, 0);
+                GameObject temp = Instantiate(CardPrefab, new Vector3(0,0,0), Quaternion.identity, playerHandGO.transform);
+                RectTransform tempTransform = temp.GetComponent<RectTransform>();
+                tempTransform.SetLocalPositionAndRotation(tempPos, Quaternion.identity);
+                Debug.Log($"{tempPos}");
+                Debug.Log(-(playerDeck.Count / 2));
+                Debug.Log((i / playerDeck.Count));
+                Debug.Log($"i = {i}, playerDeck.Count = {playerDeck.Count}");
+                string path = "PaperCards/";
+                // A = Spades, B = Hearts, C = Clubs, D = Diamonds
+                switch (playerDeck[i].suit) {
+                    case "A":
+                        path += "Spades/Spades";
+                        break;
+                    case "B":
+                        path += "Hearts/Hearts";
+                        break;
+                    case "C":
+                        path += "Clubs/Clubs";
+                        break;
+                    case "D":
+                        path += "Diamonds/Diamonds";
+                        break;
+                    default:
+                        break;
+                }
+                // 0/Null = Number card, uses value for image, 1 = Jack, 2 = Queen, 3 = King
+                switch (playerDeck[i].image)
+                {
+                    case 1:
+                        path += "Jack";
+                        break;
+                    case 2:
+                        path += "Queen";
+                        break;
+                    case 3:
+                        path += "King";
+                        break;
+                    default:
+                        if(playerDeck[i].value == 11)
+                        {
+                            path += "Ace";
+                        }
+                        else
+                        {
+                            path += $"{playerDeck[i].value}";
+                        }
+                        break;
+                }
+                temp.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
+                temp.name = $"{playerDeck[i].value}{playerDeck[i].suit}{playerDeck[i].image}";
+                Debug.Log(path);
+            }
+        }
+    }
+
     // UI Functions
     public void PlayerHitUI()
     {
@@ -159,11 +235,18 @@ public class BlackjackProto : MonoBehaviour
 // Card Class
 public class Card
 {
-    public int value { get; set; }
-    public string suit { get; set; }
+    public int value { get; set; } // Value of card
+    public string suit { get; set; } // A = Spades, B = Hearts, C = Clubs, D = Diamonds
+    public int image { get; set; } // 0/Null = Number card, uses value for image, 1 = Jack, 2 = Queen, 3 = King
     public Card (int value, string suit)
     {
         this.value = value;
         this.suit = suit;
+    }
+    public Card(int value, string suit, int image)
+    {
+        this.value = value;
+        this.suit = suit;
+        this.image = image;
     }
 }
