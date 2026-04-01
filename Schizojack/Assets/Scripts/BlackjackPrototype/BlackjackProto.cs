@@ -152,14 +152,11 @@ public class BlackjackProto : MonoBehaviour
         {
             for (int i = 0; i < playerDeck.Count; i++)
             {
-                Vector3 tempPos = new Vector3(-(playerDeck.Count / 2) * (i / playerDeck.Count) * 75, 0, 0);
+                float deckCount = playerDeck.Count;
+
+                Vector3 tempPos = new Vector3((i - (deckCount - 1) / 2f) * 150f, 0, 0);
                 GameObject temp = Instantiate(CardPrefab, new Vector3(0,0,0), Quaternion.identity, playerHandGO.transform);
-                RectTransform tempTransform = temp.GetComponent<RectTransform>();
-                tempTransform.SetLocalPositionAndRotation(tempPos, Quaternion.identity);
-                Debug.Log($"{tempPos}");
-                Debug.Log(-(playerDeck.Count / 2));
-                Debug.Log((i / playerDeck.Count));
-                Debug.Log($"i = {i}, playerDeck.Count = {playerDeck.Count}");
+                temp.GetComponent<RectTransform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
                 string path = "PaperCards/";
                 // A = Spades, B = Hearts, C = Clubs, D = Diamonds
                 switch (playerDeck[i].suit) {
