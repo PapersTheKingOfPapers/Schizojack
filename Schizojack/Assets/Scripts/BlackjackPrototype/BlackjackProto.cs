@@ -30,11 +30,14 @@ public class BlackjackProto : MonoBehaviour
 
     List<Card> _actualDeck = new List<Card>();
 
+    List<Actor> _actors = new List<Actor>();
+
     public List<Card> playerDeck = new List<Card>();
 
     public TMP_Text handText;
     public TMP_Text deckText;
     public TMP_Text gameStateText;
+    public TMP_Text actorStateText;
 
     public Button hitCardButton;
     public Button shuffleButton;
@@ -53,6 +56,9 @@ public class BlackjackProto : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _actors.Add(new Actor());
+        _actors.Add(new Actor());
+        _actors.Add(new Actor());
         ResetDecks();
     }
 
@@ -76,22 +82,10 @@ public class BlackjackProto : MonoBehaviour
 
     public void UpdateGameState()
     {
-        _playerDeckValue1 = 0; // Ace = 1
-        _playerDeckValue2 = 0; // Ace = 11
+        actorStateText.text = "";
 
-        foreach (Card card in playerDeck) 
-        {
-            if (card.value == 11)
-            {
-                _playerDeckValue1 += 1;
-                _playerDeckValue2 += 11;
-            }
-            else
-            {
-                _playerDeckValue1 += card.value;
-                _playerDeckValue2 += card.value;
-            }
-        }
+        _playerDeckValue1 = DeckValue(playerDeck, false); // Ace Low - Ace = 1
+        _playerDeckValue2 = DeckValue(playerDeck, false); // Ace High - Ace = 11
 
         if (_playerDeckValue1 > 21 && _playerDeckValue2 > 21)
         {
@@ -106,6 +100,11 @@ public class BlackjackProto : MonoBehaviour
         else
         {
             gameStateText.text = $"Your hand is worth {_playerDeckValue1} with an Ace worth 1, and {_playerDeckValue2} with an Ace worth 11";
+        }
+
+        for (int i = 0; i < _actors.Count; i++)
+        {
+            actorStateText.text += $"| Actor {i + 1}'s Hand Value : L{_actors[i].deckValueLow}/H{_actors[i].deckValueHigh} |";
         }
 
         ShowPlayerHand();
@@ -205,13 +204,74 @@ public class BlackjackProto : MonoBehaviour
         }
     }
 
+    public void ActorsPlayRound() // Bots
+    {
+        foreach(Actor actor in _actors)
+        {
+            if(actor.actorLost == false || actor.actorWon == false)
+            {
+                actor.deckValueLow = DeckValue(actor.actorDeck, false);
+                actor.deckValueHigh = DeckValue(actor.actorDeck, true);
+
+                if (actor.deckValueLow > 21 && actor.deckValueHigh > 21)
+                {
+                    actor.actorLost = true;
+                }
+                else if (actor.deckValueLow == 21 || actor.deckValueHigh == 21)
+                {
+                    actor.actorWon = true;
+                }
+
+                if(actor.deckValueLow < 17 || actor.deckValueHigh < 17)
+                {
+                    actor.actorDeck = CardHit(actor.actorDeck);
+                }
+
+                actor.deckValueLow = DeckValue(actor.actorDeck, false);
+                actor.deckValueHigh = DeckValue(actor.actorDeck, true);
+            }
+        }
+    }
+
+    public int DeckValue(List<Card> deck, bool aceHigh)
+    {
+        int _deckValue = 0;
+        foreach (Card card in deck)
+        {
+            if (card.value == 11)
+            {
+                if (aceHigh)
+                {
+                    _deckValue += 11;
+                }
+                else
+                {
+                    _deckValue += 1;
+                }
+            }
+            else
+            {
+                _deckValue += card.value;
+            }
+        }
+        return _deckValue;
+    }
+
     // UI Functions
     public void PlayerHitUI()
     {
         _canShuffle = false;
         playerDeck = CardHit(playerDeck);
+        ActorsPlayRound();
         UpdateGameState();
     }
+    public void PlayerStandUI()
+    {
+        _canShuffle = false;
+        ActorsPlayRound();
+        UpdateGameState();
+    }
+
     public void ShuffleDeckUI()
     {
         _actualDeck = ShuffleDeck(_actualDeck);
@@ -220,7 +280,11 @@ public class BlackjackProto : MonoBehaviour
     {
         _actualDeck = new List<Card>(_baseCards);
         _actualDeck = ShuffleDeck(_actualDeck);
-        playerDeck = new List<Card>();
+        playerDeck.Clear();
+        foreach (Actor actor in _actors)
+        {
+            actor.Reset();
+        }
         _playerLost = false;
         _playerWon = false;
         _canShuffle = true;
@@ -245,5 +309,38 @@ public class Card
         this.value = value;
         this.suit = suit;
         this.image = image;
+    }
+}
+
+public class Actor
+{
+    public List<Card> actorDeck { get; set; }
+    public bool actorLost { get; set; }
+    public bool actorWon { get; set; }
+    public int deckValueLow { get; set; }
+    public int deckValueHigh { get; set; }
+    public Actor()
+    {
+        this.actorDeck = new List<Card>();
+        actorLost = false;
+        actorWon = false;
+        deckValueLow = 0;
+        deckValueHigh = 0;
+    }
+    public Actor (List<Card> actorDeck)
+    {
+        this.actorDeck = actorDeck;
+        actorLost = false;
+        actorWon = false;
+        deckValueLow = 0;
+        deckValueHigh = 0;
+    }
+    public void Reset()
+    {
+        actorDeck.Clear();
+        actorLost = false;
+        actorWon = false;
+        deckValueLow = 0;
+        deckValueHigh = 0;
     }
 }
