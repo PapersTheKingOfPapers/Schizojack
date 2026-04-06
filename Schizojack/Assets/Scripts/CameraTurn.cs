@@ -41,6 +41,7 @@ public class CameraTurn : MonoBehaviour //Change to NetworksBehaviour when MP
         _look.Enable();
 
         Cursor.lockState = CursorLockMode.Confined;
+        _baseRotation = _Head.transform.rotation.eulerAngles;
     }
 
     void Update()
