@@ -36,6 +36,8 @@ public class CameraTurn : MonoBehaviour //Change to NetworksBehaviour when MP
 
         //Makes the target the Gameobject with tag
         
+        _baseRotation = transform.forward;
+
         //Inputs
         _look = Assets.FindAction("Player/Look");
         _look.Enable();
