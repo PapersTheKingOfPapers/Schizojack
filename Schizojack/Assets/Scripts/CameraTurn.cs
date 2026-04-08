@@ -1,7 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraTurn : MonoBehaviour //Change to NetworksBehaviour when MP
+public class CameraTurn : NetworkBehaviour //Change to NetworksBehaviour when MP
 {
     [Header("Settings")]
     [SerializeField] private Transform _Head;
@@ -22,19 +23,15 @@ public class CameraTurn : MonoBehaviour //Change to NetworksBehaviour when MP
             _look.Disable();
     }
     //Change into public override void OnNetworkSpawn() when mp
-    void Start()
+    public override void OnNetworkSpawn()
     {
         //Checks if the client is the owner of this script
         //If not, it returns and disables the camera so it won't use it
-        /*if (!IsOwner)
+        if (!IsOwner)
         {
-            _Camera.gameObject.SetActive(false);
+            _Head.gameObject.SetActive(false);
             return;
-        }*/
-
-        //Checks for gameObjects with a tag
-
-        //Makes the target the Gameobject with tag
+        }
         
         _baseRotation = transform.forward;
 
@@ -50,7 +47,7 @@ public class CameraTurn : MonoBehaviour //Change to NetworksBehaviour when MP
     {
         //Checks if the client is the owner of this script
         //If not, it returns
-        //if (!IsOwner) return;
+        if (!IsOwner) return;
 
         look = _look.ReadValue<Vector2>();
 
