@@ -9,10 +9,8 @@ public class ItemDescriptionReader : MonoBehaviour
     [SerializeField] private TMP_Text Title;
     [SerializeField] private TMP_Text Description;
     [Header("Screen References")]
-    [SerializeField] private RectTransform BottomRCorner;
-    [SerializeField] private RectTransform TopRCorner;
-    [SerializeField] private RectTransform BottomLCorner;
-    [SerializeField] private RectTransform TopLCorner;
+    [SerializeField] private RectTransform OverLay;
+    [Header("Input")]
     [SerializeField] private InputActionAsset Assets;
     [Header("Settings")]
     [SerializeField] private float readDistance = 5f;
@@ -20,68 +18,58 @@ public class ItemDescriptionReader : MonoBehaviour
     private InputAction _look;
     private Vector2 look;
 
-    private bool highlighted;
     void Update()
     {
         look = _look.ReadValue<Vector2>();
 
-        BottomLCorner.gameObject.SetActive(highlighted);
-        TopLCorner.gameObject.SetActive(highlighted);
-        BottomRCorner.gameObject.SetActive(highlighted);
-        TopRCorner.gameObject.SetActive(highlighted);
-
-        Debug.DrawRay(transform.position, transform.forward * readDistance, Color.black);
+        OverLay.gameObject.SetActive(false);
 
         Ray ray = Camera.main.ScreenPointToRay(look);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, readDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, readDistance))
         {
             ItemDescription item = hit.collider.GetComponent<ItemDescription>();
 
             if (item != null)
             {
-                highlighted = true;
+                OverLay.gameObject.SetActive(true);
 
                 Title.text = item.itemTitle;
                 Description.text = item.itemDescription;
 
-                Renderer rend = hit.collider.GetComponent<Renderer>();
-                if (rend != null)
+                /*Drawing
+                Renderer renderer = hit.collider.GetComponent<Renderer>();
+                Bounds bounds = renderer.bounds;
+
+                Vector3[] corners = new Vector3[8];
+
+                corners[0] = new Vector3(bounds.min.x, bounds.min.y, bounds.min.z);
+                corners[1] = new Vector3(bounds.max.x, bounds.min.y, bounds.min.z);
+                corners[2] = new Vector3(bounds.min.x, bounds.max.y, bounds.min.z);
+                corners[3] = new Vector3(bounds.max.x, bounds.max.y, bounds.min.z);
+
+                corners[4] = new Vector3(bounds.min.x, bounds.min.y, bounds.max.z);
+                corners[5] = new Vector3(bounds.max.x, bounds.min.y, bounds.max.z);
+                corners[6] = new Vector3(bounds.min.x, bounds.max.y, bounds.max.z);
+                corners[7] = new Vector3(bounds.max.x, bounds.max.y, bounds.max.z);
+
+                Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+                Vector2 max = new Vector2(float.MinValue, float.MinValue);
+
+                foreach (Vector3 corner in corners)
                 {
-                    Bounds bounds = rend.bounds;
+                    Vector3 screenPoint = Camera.main.WorldToScreenPoint(corner);
 
-                    Vector3 min = bounds.min;
-                    Vector3 max = bounds.max;
-
-                    Vector3[] corners = new Vector3[8]
-                    {
-                        new Vector3(min.x, min.y, min.z),
-                        new Vector3(max.x, min.y, min.z),
-                        new Vector3(min.x, max.y, min.z),
-                        new Vector3(max.x, max.y, min.z),
-                        new Vector3(min.x, min.y, max.z),
-                        new Vector3(max.x, min.y, max.z),
-                        new Vector3(min.x, max.y, max.z),
-                        new Vector3(max.x, max.y, max.z)
-                    };
-
-                    Vector3 minScreen = new Vector3(float.MaxValue, float.MaxValue, 0);
-                    Vector3 maxScreen = new Vector3(float.MinValue, float.MinValue, 0);
-
-                    foreach (Vector3 corner in corners)
-                    {
-                        Vector3 screenPoint = Camera.main.WorldToScreenPoint(corner);
-
-                        minScreen = Vector3.Min(minScreen, screenPoint);
-                        maxScreen = Vector3.Max(maxScreen, screenPoint);
-                    }
-
-                    TopLCorner.position = new Vector3(minScreen.x, maxScreen.y, 0);
-                    TopRCorner.position = new Vector3(maxScreen.x, maxScreen.y, 0);
-                    BottomLCorner.position = new Vector3(minScreen.x, minScreen.y, 0);
-                    BottomRCorner.position = new Vector3(maxScreen.x, minScreen.y, 0);
+                    min = Vector2.Min(min, screenPoint);
+                    max = Vector2.Max(max, screenPoint);
                 }
+
+                Vector2 size = max - min;
+                Vector2 position = (max + min) / 2f;
+
+                OverLay.position = position;
+                OverLay.sizeDelta = size;
+                */
 
                 return;
             }
@@ -89,8 +77,8 @@ public class ItemDescriptionReader : MonoBehaviour
 
         Title.text = "";
         Description.text = "";
-        highlighted = false;
     }
+
     private void OnEnable()
     {
         _look = Assets.FindAction("Player/Look");
