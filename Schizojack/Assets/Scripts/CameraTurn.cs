@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraTurn : NetworkBehaviour //Change to NetworksBehaviour when MP
+public class CameraTurn : NetworkBehaviour
 {
     [Header("Settings")]
     [SerializeField] private Transform _Head;
@@ -17,12 +17,11 @@ public class CameraTurn : NetworkBehaviour //Change to NetworksBehaviour when MP
     private Vector3 _currentRotation;
     private Vector3 _currentVelocity;
 
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
         if (_look != null)
             _look.Disable();
     }
-    //Change into public override void OnNetworkSpawn() when mp
     public override void OnNetworkSpawn()
     {
         //Checks if the client is the owner of this script

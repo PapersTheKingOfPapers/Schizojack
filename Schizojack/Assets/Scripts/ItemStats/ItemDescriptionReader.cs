@@ -1,30 +1,37 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
-public class ItemDescriptionReader : MonoBehaviour
+public class ItemDescriptionReader : NetworkBehaviour
 {
     [Header("Text Mesh Pro")]
     [SerializeField] private TMP_Text Title;
     [SerializeField] private TMP_Text Description;
     [Header("Screen References")]
+    [SerializeField] private GameObject Hud; //parent for ui so it can be disabled for all other players so all wont see the same
     [SerializeField] private RectTransform OverLay;
+    [SerializeField] private RectTransform InfoPanel;
     [Header("Input")]
     [SerializeField] private InputActionAsset Assets;
     [Header("Settings")]
     [SerializeField] private float readDistance = 5f;
 
+    private Camera playerCamera;
     private InputAction _look;
     private Vector2 look;
 
     void Update()
     {
+        if (!IsOwner)
+            return;
+
         look = _look.ReadValue<Vector2>();
 
         OverLay.gameObject.SetActive(false);
 
-        Ray ray = Camera.main.ScreenPointToRay(look);
+        Ray ray = playerCamera.ScreenPointToRay(look);
 
         if (Physics.Raycast(ray, out RaycastHit hit, readDistance))
         {
@@ -32,12 +39,22 @@ public class ItemDescriptionReader : MonoBehaviour
 
             if (item != null)
             {
+                //makes the overlay visible and sets the title and description text
                 OverLay.gameObject.SetActive(true);
 
                 Title.text = item.itemTitle;
                 Description.text = item.itemDescription;
 
-                /*Drawing
+                //Updates the info panel height
+                Description.ForceMeshUpdate();
+
+                float textHeight = Description.GetRenderedValues(false).y;
+
+                Vector2 infoSize = InfoPanel.sizeDelta;
+                infoSize.y = textHeight + 30;
+                InfoPanel.sizeDelta = infoSize;
+                //ends here               
+
                 Renderer renderer = hit.collider.GetComponent<Renderer>();
                 Bounds bounds = renderer.bounds;
 
@@ -69,22 +86,34 @@ public class ItemDescriptionReader : MonoBehaviour
 
                 OverLay.position = position;
                 OverLay.sizeDelta = size;
-                */
 
                 return;
             }
         }
 
+        //Resets text to nothing
         Title.text = "";
         Description.text = "";
     }
 
-    private void OnEnable()
+    public override void OnNetworkSpawn() //Basically On Enabled
     {
+        if (!IsOwner)
+        {
+            Hud.SetActive(false);
+
+            enabled = false;
+
+            return;
+        }
+
+        playerCamera = GetComponentInChildren<Camera>();
+
         _look = Assets.FindAction("Player/Look");
         _look.Enable();
     }
-    private void OnDisable()
+
+    public override void OnNetworkDespawn() //Basically On Disabled
     {
         if (_look != null)
             _look.Disable();

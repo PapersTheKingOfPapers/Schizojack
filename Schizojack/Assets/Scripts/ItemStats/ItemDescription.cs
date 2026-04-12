@@ -5,6 +5,6 @@ public class ItemDescription : MonoBehaviour
     [Header("Item Info")]
     public string itemTitle;
 
-    [TextArea]
+    [TextArea(5, 20)]
     public string itemDescription;
 }
