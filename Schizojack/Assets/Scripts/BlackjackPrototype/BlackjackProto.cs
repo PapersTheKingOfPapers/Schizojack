@@ -11,28 +11,28 @@ public class BlackjackProto : MonoBehaviour
 {
 
     // A = Spades, B = Hearts, C = Clubs, D = Diamonds
-    List<Card> _baseCards = new List<Card>
+    List<ProtoCard> _baseCards = new List<ProtoCard>
     {
-        new Card(2,"A"), new Card(2,"B"), new Card(2,"C"), new Card(2,"D"),
-        new Card(3,"A"), new Card(3,"B"), new Card(3,"C"), new Card(3,"D"),
-        new Card(4,"A"), new Card(4,"B"), new Card(4,"C"), new Card(4,"D"),
-        new Card(5,"A"), new Card(5,"B"), new Card(5,"C"), new Card(5,"D"),
-        new Card(6,"A"), new Card(6,"B"), new Card(6,"C"), new Card(6,"D"),
-        new Card(7,"A"), new Card(7,"B"), new Card(7,"C"), new Card(7,"D"),
-        new Card(8,"A"), new Card(8,"B"), new Card(8,"C"), new Card(8,"D"),
-        new Card(9,"A"), new Card(9,"B"), new Card(9,"C"), new Card(9,"D"),
-        new Card(10,"A"), new Card(10,"B"), new Card(10,"C"), new Card(10,"D"),
-        new Card(11,"A"), new Card(11,"B"), new Card(11,"C"), new Card(11,"D"),
-        new Card(10,"A",1), new Card(10,"B",1), new Card(10,"C",1), new Card(10,"D",1),
-        new Card(10,"A",2), new Card(10,"B",2), new Card(10,"C",2), new Card(10,"D",2),
-        new Card(10,"A",3), new Card(10,"B",3), new Card(10,"C",3), new Card(10,"D",3)
+        new ProtoCard(2,"A"), new ProtoCard(2,"B"), new ProtoCard(2,"C"), new ProtoCard(2,"D"),
+        new ProtoCard(3,"A"), new ProtoCard(3,"B"), new ProtoCard(3,"C"), new ProtoCard(3,"D"),
+        new ProtoCard(4,"A"), new ProtoCard(4,"B"), new ProtoCard(4,"C"), new ProtoCard(4,"D"),
+        new ProtoCard(5,"A"), new ProtoCard(5,"B"), new ProtoCard(5,"C"), new ProtoCard(5,"D"),
+        new ProtoCard(6,"A"), new ProtoCard(6,"B"), new ProtoCard(6,"C"), new ProtoCard(6,"D"),
+        new ProtoCard(7,"A"), new ProtoCard(7,"B"), new ProtoCard(7,"C"), new ProtoCard(7,"D"),
+        new ProtoCard(8,"A"), new ProtoCard(8,"B"), new ProtoCard(8,"C"), new ProtoCard(8,"D"),
+        new ProtoCard(9,"A"), new ProtoCard(9,"B"), new ProtoCard(9,"C"), new ProtoCard(9,"D"),
+        new ProtoCard(10,"A"), new ProtoCard(10,"B"), new ProtoCard(10,"C"), new ProtoCard(10,"D"),
+        new ProtoCard(11,"A"), new ProtoCard(11,"B"), new ProtoCard(11,"C"), new ProtoCard(11,"D"),
+        new ProtoCard(10,"A",1), new ProtoCard(10,"B",1), new ProtoCard(10,"C",1), new ProtoCard(10,"D",1),
+        new ProtoCard(10,"A",2), new ProtoCard(10,"B",2), new ProtoCard(10,"C",2), new ProtoCard(10,"D",2),
+        new ProtoCard(10,"A",3), new ProtoCard(10,"B",3), new ProtoCard(10,"C",3), new ProtoCard(10,"D",3)
     };
 
-    List<Card> _actualDeck = new List<Card>();
+    List<ProtoCard> _actualDeck = new List<ProtoCard>();
 
-    List<Actor> _actors = new List<Actor>();
+    List<ProtoActor> _actors = new List<ProtoActor>();
 
-    public List<Card> playerDeck = new List<Card>();
+    public List<ProtoCard> playerDeck = new List<ProtoCard>();
 
     public TMP_Text handText;
     public TMP_Text deckText;
@@ -56,9 +56,9 @@ public class BlackjackProto : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _actors.Add(new Actor());
-        _actors.Add(new Actor());
-        _actors.Add(new Actor());
+        _actors.Add(new ProtoActor());
+        _actors.Add(new ProtoActor());
+        _actors.Add(new ProtoActor());
         ResetDecks();
     }
 
@@ -85,7 +85,7 @@ public class BlackjackProto : MonoBehaviour
         actorStateText.text = "";
 
         _playerDeckValue1 = DeckValue(playerDeck, false); // Ace Low - Ace = 1
-        _playerDeckValue2 = DeckValue(playerDeck, false); // Ace High - Ace = 11
+        _playerDeckValue2 = DeckValue(playerDeck, true); // Ace High - Ace = 11
 
         if (_playerDeckValue1 > 21 && _playerDeckValue2 > 21)
         {
@@ -104,19 +104,19 @@ public class BlackjackProto : MonoBehaviour
 
         for (int i = 0; i < _actors.Count; i++)
         {
-            actorStateText.text += $"| Actor {i + 1}'s Hand Value : L{_actors[i].deckValueLow}/H{_actors[i].deckValueHigh} |";
+            actorStateText.text += $"| ProtoActor {i + 1}'s Hand Value : L{_actors[i].deckValueLow}/H{_actors[i].deckValueHigh} |";
         }
 
         ShowPlayerHand();
     }
 
-    public string CardsToString(List<Card> cards)
+    public string CardsToString(List<ProtoCard> cards)
     {
         string output = "";
 
         if (cards.Count <= 0) return output;
 
-        foreach (Card card in cards)
+        foreach (ProtoCard card in cards)
         {
             output += $"| {card.value} , {card.suit} |";
         }
@@ -124,15 +124,15 @@ public class BlackjackProto : MonoBehaviour
         return output;
     }
 
-    public List<Card> CardHit(List<Card> hand)
+    public List<ProtoCard> CardHit(List<ProtoCard> hand)
     {
-        Card temp = _actualDeck.First();
+        ProtoCard temp = _actualDeck.First();
         _actualDeck.Remove(temp);
         hand.Add(temp);
         return hand;
     }
 
-    public List<Card> ShuffleDeck(List<Card> deck)
+    public List<ProtoCard> ShuffleDeck(List<ProtoCard> deck)
     {
         return deck.OrderBy(i => Guid.NewGuid()).ToList();
     }
@@ -206,7 +206,7 @@ public class BlackjackProto : MonoBehaviour
 
     public void ActorsPlayRound() // Bots
     {
-        foreach(Actor actor in _actors)
+        foreach(ProtoActor actor in _actors)
         {
             if(actor.actorLost == false || actor.actorWon == false)
             {
@@ -233,10 +233,10 @@ public class BlackjackProto : MonoBehaviour
         }
     }
 
-    public int DeckValue(List<Card> deck, bool aceHigh)
+    public int DeckValue(List<ProtoCard> deck, bool aceHigh)
     {
         int _deckValue = 0;
-        foreach (Card card in deck)
+        foreach (ProtoCard card in deck)
         {
             if (card.value == 11)
             {
@@ -278,10 +278,10 @@ public class BlackjackProto : MonoBehaviour
     }
     public void ResetDecks()
     {
-        _actualDeck = new List<Card>(_baseCards);
+        _actualDeck = new List<ProtoCard>(_baseCards);
         _actualDeck = ShuffleDeck(_actualDeck);
         playerDeck.Clear();
-        foreach (Actor actor in _actors)
+        foreach (ProtoActor actor in _actors)
         {
             actor.Reset();
         }
@@ -293,18 +293,18 @@ public class BlackjackProto : MonoBehaviour
     }
 }
 
-// Card Class
-public class Card
+// ProtoCard Class
+public class ProtoCard
 {
     public int value { get; set; } // Value of card
     public string suit { get; set; } // A = Spades, B = Hearts, C = Clubs, D = Diamonds
     public int image { get; set; } // 0/Null = Number card, uses value for image, 1 = Jack, 2 = Queen, 3 = King
-    public Card (int value, string suit)
+    public ProtoCard (int value, string suit)
     {
         this.value = value;
         this.suit = suit;
     }
-    public Card(int value, string suit, int image)
+    public ProtoCard(int value, string suit, int image)
     {
         this.value = value;
         this.suit = suit;
@@ -312,22 +312,22 @@ public class Card
     }
 }
 
-public class Actor
+public class ProtoActor
 {
-    public List<Card> actorDeck { get; set; }
+    public List<ProtoCard> actorDeck { get; set; }
     public bool actorLost { get; set; }
     public bool actorWon { get; set; }
     public int deckValueLow { get; set; }
     public int deckValueHigh { get; set; }
-    public Actor()
+    public ProtoActor()
     {
-        this.actorDeck = new List<Card>();
+        this.actorDeck = new List<ProtoCard>();
         actorLost = false;
         actorWon = false;
         deckValueLow = 0;
         deckValueHigh = 0;
     }
-    public Actor (List<Card> actorDeck)
+    public ProtoActor (List<ProtoCard> actorDeck)
     {
         this.actorDeck = actorDeck;
         actorLost = false;
