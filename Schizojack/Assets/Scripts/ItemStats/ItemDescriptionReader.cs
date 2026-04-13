@@ -24,9 +24,6 @@ public class ItemDescriptionReader : NetworkBehaviour
 
     void Update()
     {
-        if (!IsOwner)
-            return;
-
         look = _look.ReadValue<Vector2>();
 
         OverLay.gameObject.SetActive(false);
@@ -55,37 +52,12 @@ public class ItemDescriptionReader : NetworkBehaviour
                 InfoPanel.sizeDelta = infoSize;
                 //ends here               
 
-                Renderer renderer = hit.collider.GetComponent<Renderer>();
-                Bounds bounds = renderer.bounds;
-
-                Vector3[] corners = new Vector3[8];
-
-                corners[0] = new Vector3(bounds.min.x, bounds.min.y, bounds.min.z);
-                corners[1] = new Vector3(bounds.max.x, bounds.min.y, bounds.min.z);
-                corners[2] = new Vector3(bounds.min.x, bounds.max.y, bounds.min.z);
-                corners[3] = new Vector3(bounds.max.x, bounds.max.y, bounds.min.z);
-
-                corners[4] = new Vector3(bounds.min.x, bounds.min.y, bounds.max.z);
-                corners[5] = new Vector3(bounds.max.x, bounds.min.y, bounds.max.z);
-                corners[6] = new Vector3(bounds.min.x, bounds.max.y, bounds.max.z);
-                corners[7] = new Vector3(bounds.max.x, bounds.max.y, bounds.max.z);
-
-                Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
-                Vector2 max = new Vector2(float.MinValue, float.MinValue);
-
-                foreach (Vector3 corner in corners)
+                //Box Scaling
+                BoxCollider box = hit.collider.GetComponent<BoxCollider>();
+                if (box != null)
                 {
-                    Vector3 screenPoint = Camera.main.WorldToScreenPoint(corner);
-
-                    min = Vector2.Min(min, screenPoint);
-                    max = Vector2.Max(max, screenPoint);
+                    UpdateOverlayBounds(box, hit.collider.transform);
                 }
-
-                Vector2 size = max - min;
-                Vector2 position = (max + min) / 2f;
-
-                OverLay.position = position;
-                OverLay.sizeDelta = size;
 
                 return;
             }
@@ -94,6 +66,40 @@ public class ItemDescriptionReader : NetworkBehaviour
         //Resets text to nothing
         Title.text = "";
         Description.text = "";
+    }
+    void UpdateOverlayBounds(BoxCollider box, Transform targetTransform)
+    {
+        Vector3 center = box.center;
+        Vector3 size = box.size;
+
+        Vector3[] corners = new Vector3[8];
+
+        int i = 0;
+        for (int x = -1; x <= 1; x += 2)
+            for (int y = -1; y <= 1; y += 2)
+                for (int z = -1; z <= 1; z += 2)
+                {
+                    Vector3 localCorner = center + Vector3.Scale(size * 0.5f, new Vector3(x, y, z));
+                    corners[i++] = targetTransform.TransformPoint(localCorner);
+                }
+
+        Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+        Vector2 max = new Vector2(float.MinValue, float.MinValue);
+
+        foreach (Vector3 corner in corners)
+        {
+            Vector3 screenPoint = playerCamera.WorldToScreenPoint(corner);
+
+            if (screenPoint.z < 0)
+                continue;
+
+            min = Vector2.Min(min, screenPoint);
+            max = Vector2.Max(max, screenPoint);
+        }
+
+        OverLay.position = (min + max) * 0.5f;
+
+        OverLay.sizeDelta = max - min;
     }
 
     public override void OnNetworkSpawn() //Basically On Enabled
