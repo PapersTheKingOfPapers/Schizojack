@@ -9,19 +9,6 @@ public class SchizojackActorFrontend : MonoBehaviour
 {
 
     public SchizojackActor[] Actors;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ActorHit(int actorIndex, List<Card> cards)
     {
         Actors[actorIndex].tempCards = new List<Card>(cards);
