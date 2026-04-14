@@ -9,6 +9,10 @@ TagManager:
   - Seat2
   - Seat3
   - Seat4
+  - Actor0
+  - Actor1
+  - Actor2
+  - Actor3
   layers:
   - Default
   - TransparentFX

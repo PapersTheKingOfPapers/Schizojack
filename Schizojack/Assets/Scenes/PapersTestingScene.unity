@@ -18677,6 +18677,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Actor1
       objectReference: {fileID: 0}
+    - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
+      propertyPath: m_TagString
+      value: Actor1
+      objectReference: {fileID: 0}
     - target: {fileID: 6054836916027499168, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.25
@@ -19534,6 +19538,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
       propertyPath: m_Name
+      value: Actor3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
+      propertyPath: m_TagString
       value: Actor3
       objectReference: {fileID: 0}
     - target: {fileID: 6054836916027499168, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
@@ -21480,6 +21488,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Actor2
       objectReference: {fileID: 0}
+    - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
+      propertyPath: m_TagString
+      value: Actor2
+      objectReference: {fileID: 0}
     - target: {fileID: 6054836916027499168, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.3750005
@@ -21697,6 +21709,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
       propertyPath: m_Name
+      value: Actor0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5025341661836429149, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
+      propertyPath: m_TagString
       value: Actor0
       objectReference: {fileID: 0}
     - target: {fileID: 6054836916027499168, guid: 02edf815ddf898d4da564ca456399aef, type: 3}
