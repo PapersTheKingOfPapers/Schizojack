@@ -1,17 +1,23 @@
-using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEngine.UI;
+using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
-using System.Collections;
+using UnityEngine.UI;
+using static Unity.Collections.AllocatorManager;
 
 [RequireComponent(typeof(SchizojackActorFrontend))]
+[RequireComponent(typeof(SchizojackNetworkBackend))]
+
 public class SchizojackBackend : MonoBehaviour
 {
     SchizojackActorFrontend _frontEnd;
+    SchizojackNetworkBackend _networkBackEnd;
 
     // A = Spades, B = Hearts, C = Clubs, D = Diamonds
     List<Card> _baseCards = new List<Card>
@@ -45,8 +51,21 @@ public class SchizojackBackend : MonoBehaviour
 
     private bool _canShuffle = true;
 
+    private bool[] _botActors = { false, true, true, true }; // 0 is always false, for it is the host.
+                                                             // 1,2,3 can be either true or false, depending
+                                                             // on how many players there are.
+
     private int _currentTurn = 0; //  Who's turn it is
+
+    [HideInInspector] public int _localUserNumber = 0;
+
     private bool _actorActedThisTurn = false; // If the current player (the one above this) has acted this round.
+
+    [HideInInspector] public bool sessionStarted = false;
+
+    [SerializeField] private InputActionAsset _inputActionAssets;
+    private InputAction _cardHit;
+    private InputAction _cardStand;
 
     public GameObject CardPrefab;
     public GameObject playerHandGO;
@@ -55,7 +74,24 @@ public class SchizojackBackend : MonoBehaviour
     void Start()
     {
         _frontEnd = this.GetComponent<SchizojackActorFrontend>();
+        _networkBackEnd = this.GetComponent<SchizojackNetworkBackend>();
 
+        //Inputs
+        _cardHit = _inputActionAssets.FindAction("Player/CardHit");
+        _cardHit.Enable();
+
+        _cardStand = _inputActionAssets.FindAction("Player/CardStand");
+        _cardStand.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _cardHit.Disable();
+        _cardStand.Disable();
+    }
+
+    public void InitializeActors()
+    {
         foreach (var actor in _frontEnd.Actors)
         {
             _actors.Add(new Actor());
@@ -67,14 +103,14 @@ public class SchizojackBackend : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_currentTurn > _actors.Count - 1)
-        {
-            _currentTurn = 0;
-        }
+        // Reset the current turn if _currentTurn is over the amount of actors present.
+        FixCurrentTurnCycle();
 
+        // Debug text for host.
         handText.text = CardsToString(_actors[0].actorDeck);
         deckText.text = CardsToString(_actualDeck);
 
+        // If animation finished for current actor, move to next actor.
         if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
         {
             _frontEnd.Actors[_currentTurn].finishedAnimation = false;
@@ -82,10 +118,9 @@ public class SchizojackBackend : MonoBehaviour
             _currentTurn++;
         }
 
-        if (_currentTurn > _actors.Count - 1)
-        {
-            _currentTurn = 0;
-        }
+        FixCurrentTurnCycle();
+
+        // Bot Functions
 
         if (_currentTurn != 0)
         {
@@ -123,6 +158,7 @@ public class SchizojackBackend : MonoBehaviour
             UpdateGameState();
         }
 
+        // Host's buttons.
         if (_actors[0].actorLost)
         {
             hitCardButton.interactable = false;
@@ -135,34 +171,52 @@ public class SchizojackBackend : MonoBehaviour
         shuffleButton.interactable = _canShuffle;
     }
 
+    private void OwnerUpdateCycle()
+    {
+
+    }
+    private void ClientUpdateCycle()
+    {
+
+    }
+
+    private void FixCurrentTurnCycle()
+    {
+        // Reset the current turn if _currentTurn is over the amount of actors present.
+        if (_currentTurn > _actors.Count - 1)
+        {
+            _currentTurn = 0;
+        }
+    }
+
     public void UpdateGameState()
     {
         actorStateText.text = "";
 
-        _actors[0].deckValueLow = DeckValue(_actors[0].actorDeck, false);
-        _actors[0].deckValueHigh = DeckValue(_actors[0].actorDeck, true);
+        _actors[_localUserNumber].deckValueLow = DeckValue(_actors[_localUserNumber].actorDeck, false);
+        _actors[_localUserNumber].deckValueHigh = DeckValue(_actors[_localUserNumber].actorDeck, true);
 
-        if (_actors[0].deckValueLow > 21 && _actors[0].deckValueHigh > 21)
+        // Local actor text
+        if (_actors[_localUserNumber].deckValueLow > 21 && _actors[_localUserNumber].deckValueHigh > 21)
         {
-            gameStateText.text = $"Hand is over 21, you loose. Your hand is worth {_actors[0].deckValueLow} with an Ace worth 1, and {_actors[0].deckValueHigh} with an Ace worth 11";
-            _actors[0].actorLost = true;
+            gameStateText.text = $"Hand is over 21, you loose. Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
+            _actors[_localUserNumber].actorLost = true;
         }
-        else if (_actors[0].deckValueLow == 21 || _actors[0].deckValueHigh == 21)
+        else if (_actors[_localUserNumber].deckValueLow == 21 || _actors[_localUserNumber].deckValueHigh == 21)
         {
-            gameStateText.text = $"You win, Your hand is worth {_actors[0].deckValueLow} with an Ace worth 1, and {_actors[0].deckValueHigh} with an Ace worth 11";
-            _actors[0].actorWon = true;
+            gameStateText.text = $"You win, Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
+            _actors[_localUserNumber].actorWon = true;
         }
         else
         {
-            gameStateText.text = $"Your hand is worth {_actors[0].deckValueLow} with an Ace worth 1, and {_actors[0].deckValueHigh} with an Ace worth 11";
+            gameStateText.text = $"Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
         }
 
+        // Debug text above screen
         for (int i = 0; i < _actors.Count; i++)
         {
             actorStateText.text += $"| Actor {i + 1}'s Hand Value : L{_actors[i].deckValueLow}/H{_actors[i].deckValueHigh} |";
         }
-
-        //_frontEnd.UpdateActorHands(_actors);
     }
 
     public string CardsToString(List<Card> cards)
@@ -216,6 +270,18 @@ public class SchizojackBackend : MonoBehaviour
         return _deckValue;
     }
 
+    // Backend Functions, used to call the Network Backend
+
+    public void NetworkActorHit(int actorIndex)
+    {
+        if(_actorActedThisTurn == false)
+        {
+            _networkBackEnd.ActorHitRequestRpc(actorIndex);
+        }
+    }
+
+    // Host Functions, Called by the Schizojack Backend on the host's side on the request of the Network Manager Backend.
+
     public void ActorHit(int actorIndex)
     {
         _actors[actorIndex].actorDeck = CardHit(_actors[actorIndex].actorDeck);
@@ -223,10 +289,36 @@ public class SchizojackBackend : MonoBehaviour
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
         _actorActedThisTurn = true;
     }
-
     public void ActorStand(int actorIndex)
     {
         _frontEnd.ActorStand(actorIndex);
+        _actorActedThisTurn = true;
+    }
+    public void ResetDecks()
+    {
+        _actualDeck = new List<Card>(_baseCards);
+        _actualDeck = ShuffleDeck(_actualDeck);
+        foreach (Actor actor in _actors)
+        {
+            actor.Reset();
+        }
+        _canShuffle = true;
+        hitCardButton.interactable = true;
+        _currentTurn = 0;
+        UpdateGameState();
+        _frontEnd.UpdateActorHands(_actors);
+    }
+    public Card ActorLatestCard(int actorIndex)
+    {
+        return _actors[actorIndex].actorDeck.Last();
+    }
+
+    // Client Functions, Called by the Network Manager Backend on the client's side.
+    public void ActorHitClient(int actorIndex, Card card)
+    {
+        _actors[actorIndex].actorDeck.Add(card);
+        _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
+        _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
         _actorActedThisTurn = true;
     }
 
@@ -245,24 +337,9 @@ public class SchizojackBackend : MonoBehaviour
         //ActorsPlayRound();
         UpdateGameState();
     }
-
     public void ShuffleDeckUI()
     {
         _actualDeck = ShuffleDeck(_actualDeck);
-    }
-    public void ResetDecks()
-    {
-        _actualDeck = new List<Card>(_baseCards);
-        _actualDeck = ShuffleDeck(_actualDeck);
-        foreach (Actor actor in _actors)
-        {
-            actor.Reset();
-        }
-        _canShuffle = true;
-        hitCardButton.interactable = true;
-        _currentTurn = 0;
-        UpdateGameState();
-        _frontEnd.UpdateActorHands(_actors);
     }
 }
 

@@ -16223,6 +16223,8 @@ GameObject:
   - component: {fileID: 1483317345}
   - component: {fileID: 1483317344}
   - component: {fileID: 1483317343}
+  - component: {fileID: 1483317346}
+  - component: {fileID: 1483317347}
   m_Layer: 0
   m_Name: SchizojackGameMaster
   m_TagString: Untagged
@@ -16265,6 +16267,7 @@ MonoBehaviour:
   actorStateText: {fileID: 404978858}
   hitCardButton: {fileID: 852193537}
   shuffleButton: {fileID: 912821141}
+  sessionStarted: 0
   CardPrefab: {fileID: 8726130458335063973, guid: b2f7fe082a6d9e643b075f0c4f2b7ef4, type: 3}
   playerHandGO: {fileID: 963440624}
 --- !u!4 &1483317345
@@ -16283,6 +16286,44 @@ Transform:
   - {fileID: 1216657576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1483317346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483317342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2894329528
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 7
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1483317347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483317342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e06e8a1d6095f4cb1dc7b33f7427fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SchizojackNetworkBackend
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!43 &1485507669
 Mesh:
   m_ObjectHideFlags: 0
