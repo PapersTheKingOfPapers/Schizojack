@@ -17,6 +17,7 @@ public class ItemDescriptionReader : NetworkBehaviour
     [SerializeField] private InputActionAsset Assets;
     [Header("Settings")]
     [SerializeField] private float readDistance = 5f;
+    [SerializeField] private LayerMask detectLayer;
 
     private Camera playerCamera;
     private InputAction _look;
@@ -30,7 +31,7 @@ public class ItemDescriptionReader : NetworkBehaviour
 
         Ray ray = playerCamera.ScreenPointToRay(look);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, readDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, readDistance, detectLayer))
         {
             ItemDescription item = hit.collider.GetComponent<ItemDescription>();
 
