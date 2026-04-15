@@ -8,7 +8,7 @@ using static SchizojackBackend;
 public class SchizojackActorFrontend : MonoBehaviour
 {
 
-    public SchizojackActor[] Actors;
+    public List<SchizojackActor> Actors = new List<SchizojackActor>();
     public void ActorHit(int actorIndex, List<Card> cards)
     {
         Actors[actorIndex].tempCards = new List<Card>(cards);
@@ -27,7 +27,7 @@ public class SchizojackActorFrontend : MonoBehaviour
 
     public void UpdateActorHands(List<Actor> backEndActors)
     {
-        for (int i = 0; i < Actors.Length; i++)
+        for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].tempCards = backEndActors[i].actorDeck;
             Actors[i].UpdateCards();

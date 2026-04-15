@@ -61,7 +61,7 @@ public class SchizojackBackend : MonoBehaviour
 
     private bool _actorActedThisTurn = false; // If the current player (the one above this) has acted this round.
 
-    [HideInInspector] public bool sessionStarted = false;
+    public bool sessionStarted = false;
 
     [SerializeField] private InputActionAsset _inputActionAssets;
     private InputAction _cardHit;
@@ -82,6 +82,9 @@ public class SchizojackBackend : MonoBehaviour
 
         _cardStand = _inputActionAssets.FindAction("Player/CardStand");
         _cardStand.Enable();
+
+        _cardHit.performed += _ => NetworkActorHit();
+        _cardStand.performed += _ => NetworkActorStand();
     }
 
     private void OnDisable()
@@ -98,77 +101,83 @@ public class SchizojackBackend : MonoBehaviour
         }
 
         ResetDecks();
+        sessionStarted = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Reset the current turn if _currentTurn is over the amount of actors present.
-        FixCurrentTurnCycle();
-
-        // Debug text for host.
-        handText.text = CardsToString(_actors[0].actorDeck);
-        deckText.text = CardsToString(_actualDeck);
-
-        // If animation finished for current actor, move to next actor.
-        if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
+        if(sessionStarted == true)
         {
-            _frontEnd.Actors[_currentTurn].finishedAnimation = false;
-            _actorActedThisTurn = false;
-            _currentTurn++;
-        }
+            // Reset the current turn if _currentTurn is over the amount of actors present.
+            FixCurrentTurnCycle();
 
-        FixCurrentTurnCycle();
+            // Debug text for host.
+            handText.text = CardsToString(_actors[_localUserNumber].actorDeck);
+            deckText.text = CardsToString(_actualDeck);
 
-        // Bot Functions
-
-        if (_currentTurn != 0)
-        {
-            if ((_actors[_currentTurn].actorLost == false || _actors[_currentTurn].actorWon == false) && _actorActedThisTurn == false)
+            // If animation finished for current actor, move to next actor.
+            if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
             {
-                _actors[_currentTurn].deckValueLow = DeckValue(_actors[_currentTurn].actorDeck, false);
-                _actors[_currentTurn].deckValueHigh = DeckValue(_actors[_currentTurn].actorDeck, true);
-
-                if (_actors[_currentTurn].deckValueLow > 21 && _actors[_currentTurn].deckValueHigh > 21)
-                {
-                    _actors[_currentTurn].actorLost = true;
-                }
-                else if (_actors[_currentTurn].deckValueLow == 21 || _actors[_currentTurn].deckValueHigh == 21)
-                {
-                    _actors[_currentTurn].actorWon = true;
-                }
-
-                if (_actors[_currentTurn].deckValueLow < 17 || _actors[_currentTurn].deckValueHigh < 17)
-                {
-                    ActorHit(_currentTurn);
-                    _actorActedThisTurn = true;
-                }
-                else
-                {
-                    ActorStand(_currentTurn);
-                    _actorActedThisTurn = true;
-                }
-
-                _actors[_currentTurn].deckValueLow = DeckValue(_actors[_currentTurn].actorDeck, false);
-                _actors[_currentTurn].deckValueHigh = DeckValue(_actors[_currentTurn].actorDeck, true);
+                _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+                _actorActedThisTurn = false;
+                _currentTurn++;
             }
-        }
-        else
-        {
+
+            FixCurrentTurnCycle();
+
+            // Bot Functions
+
+            /*if (_currentTurn != 0)
+            {
+                if ((_actors[_currentTurn].actorLost == false || _actors[_currentTurn].actorWon == false) && _actorActedThisTurn == false)
+                {
+                    _actors[_currentTurn].deckValueLow = DeckValue(_actors[_currentTurn].actorDeck, false);
+                    _actors[_currentTurn].deckValueHigh = DeckValue(_actors[_currentTurn].actorDeck, true);
+
+                    if (_actors[_currentTurn].deckValueLow > 21 && _actors[_currentTurn].deckValueHigh > 21)
+                    {
+                        _actors[_currentTurn].actorLost = true;
+                    }
+                    else if (_actors[_currentTurn].deckValueLow == 21 || _actors[_currentTurn].deckValueHigh == 21)
+                    {
+                        _actors[_currentTurn].actorWon = true;
+                    }
+
+                    if (_actors[_currentTurn].deckValueLow < 17 || _actors[_currentTurn].deckValueHigh < 17)
+                    {
+                        ActorHit(_currentTurn);
+                        _actorActedThisTurn = true;
+                    }
+                    else
+                    {
+                        ActorStand(_currentTurn);
+                        _actorActedThisTurn = true;
+                    }
+
+                    _actors[_currentTurn].deckValueLow = DeckValue(_actors[_currentTurn].actorDeck, false);
+                    _actors[_currentTurn].deckValueHigh = DeckValue(_actors[_currentTurn].actorDeck, true);
+                }
+            }
+            else
+            {
             UpdateGameState();
-        }
+            }*/
 
-        // Host's buttons.
-        if (_actors[0].actorLost)
-        {
-            hitCardButton.interactable = false;
-        }
-        if (_actors[0].actorWon)
-        {
-            hitCardButton.interactable = false;
-        }
+            UpdateGameState();
 
-        shuffleButton.interactable = _canShuffle;
+            // Host's buttons.
+            if (_actors[_localUserNumber].actorLost)
+            {
+                hitCardButton.interactable = false;
+            }
+            if (_actors[_localUserNumber].actorWon)
+            {
+                hitCardButton.interactable = false;
+            }
+
+            shuffleButton.interactable = _canShuffle;
+        }
     }
 
     private void OwnerUpdateCycle()
@@ -272,11 +281,19 @@ public class SchizojackBackend : MonoBehaviour
 
     // Backend Functions, used to call the Network Backend
 
-    public void NetworkActorHit(int actorIndex)
+    public void NetworkActorHit()
     {
         if(_actorActedThisTurn == false)
         {
-            _networkBackEnd.ActorHitRequestRpc(actorIndex);
+            _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
+        }
+    }
+
+    public void NetworkActorStand()
+    {
+        if (_actorActedThisTurn == false)
+        {
+            _networkBackEnd.ActorStandRpc(_localUserNumber);
         }
     }
 

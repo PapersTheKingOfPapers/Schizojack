@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -24,12 +25,11 @@ public class SpawnManager : NetworkBehaviour
 
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        player.tag = $"Actor{nextSpawn}";
-        _SAF.Actors[nextSpawn] = player.GetComponent<SchizojackActor>();
-        _SNB._localUserNumber = nextSpawn;
-        _SB._localUserNumber = nextSpawn;
+        var initializer = player.GetComponent<PlayerInitializer>();
+        initializer.PlayerIndex.Value = nextSpawn;
 
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
         nextSpawn++;
     }
 }

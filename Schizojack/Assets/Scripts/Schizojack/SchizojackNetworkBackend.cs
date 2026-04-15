@@ -11,6 +11,8 @@ public class SchizojackNetworkBackend : NetworkBehaviour
 
     [HideInInspector] public int _localUserNumber = 0;
 
+    public GameObject startGameButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,17 +36,31 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     {
         _backEnd.ActorHit(actorIndex);
         Card tempCard = _backEnd.ActorLatestCard(actorIndex);
-        ActorHitClientRpc(actorIndex, tempCard);
+        int value = tempCard.value;
+        string suit = tempCard.suit;
+        int image = tempCard.image;
+        ActorHitClientRpc(actorIndex, value, suit, image);
+        Debug.Log("Client Called Hit");
     }
     // Called by Server, sent to clients
     [Rpc(SendTo.NotServer)]
-    public void ActorHitClientRpc(int actorIndex, Card card)
+    public void ActorHitClientRpc(int actorIndex, int value, string suit, int image)
     {
+        Card card = new Card(value, suit, image);
         _backEnd.ActorHitClient(actorIndex, card);
+        Debug.Log("Server Sent Hit");
     }
     [Rpc(SendTo.Everyone)]
     public void ActorStandRpc(int actorIndex)
     {
         _backEnd.ActorStand(actorIndex);
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void StartSessionRpc()
+    {
+        _backEnd.InitializeActors();
+        startGameButton.SetActive(false);
+        Debug.Log("Started Session");
     }
 }
