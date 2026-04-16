@@ -104,6 +104,11 @@ public class SchizojackBackend : MonoBehaviour
         sessionStarted = true;
     }
 
+    public bool IsLocalActorTurn()
+    {
+        return _currentTurn == _localUserNumber;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -283,7 +288,7 @@ public class SchizojackBackend : MonoBehaviour
 
     public void NetworkActorHit()
     {
-        if(_actorActedThisTurn == false)
+        if(_actorActedThisTurn == false && IsLocalActorTurn())
         {
             _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
         }
@@ -291,7 +296,7 @@ public class SchizojackBackend : MonoBehaviour
 
     public void NetworkActorStand()
     {
-        if (_actorActedThisTurn == false)
+        if (_actorActedThisTurn == false && IsLocalActorTurn())
         {
             _networkBackEnd.ActorStandRpc(_localUserNumber);
         }
