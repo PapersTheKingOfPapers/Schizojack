@@ -37,6 +37,12 @@ public class SchizojackBackend : MonoBehaviour
         new Card(10,"A",3), new Card(10,"B",3), new Card(10,"C",3), new Card(10,"D",3)
     };
 
+    List<Card> _specialCards = new List<Card>
+    {
+        new Card("S", 0), new Card("S", 1), new Card("S", 2), new Card("S", 3),
+         new Card("S", 4), new Card("S", 5)
+    };
+
     List<Card> _actualDeck = new List<Card>();
 
     List<Actor> _actors = new List<Actor>();
@@ -61,9 +67,26 @@ public class SchizojackBackend : MonoBehaviour
 
     private bool _actorActedThisTurn = false; // If the current player (the one above this) has acted this round.
 
+    private bool _actorTurnFinalizer = false; // If the action the player took this turn was a finalizer (Stand, Hit), since using a trump
+                                              // card may not be a finalizer (Raise or lower target, Peek, Nice fella, and so on..).
+
     public bool sessionStarted = false;
 
+    [HideInInspector] public int blackjackTarget = 21;
+
+    [HideInInspector] public int standsInARow = 0;
+
+    [HideInInspector] public int baseDamageThisRound = 2;
+    [HideInInspector] public int damageThisRoundAddition = 0;
+    [HideInInspector] public int damageThisRound = 0;
+
+    private bool _roundFinishState = false;
+    private bool _roundFinishRan = false; 
+
+    [HideInInspector] public bool sessionFinished = false;
+
     [SerializeField] private InputActionAsset _inputActionAssets;
+
     private InputAction _cardHit;
     private InputAction _cardStand;
 
@@ -99,9 +122,17 @@ public class SchizojackBackend : MonoBehaviour
         {
             _actors.Add(new Actor());
         }
-
+        
         ResetDecks();
         sessionStarted = true;
+        if(_localUserNumber == 0)
+        {
+            deckText.gameObject.SetActive(true);
+        }
+        else
+        {
+            deckText.gameObject.SetActive(false);
+        }
     }
 
     public bool IsLocalActorTurn()
@@ -109,10 +140,17 @@ public class SchizojackBackend : MonoBehaviour
         return _currentTurn == _localUserNumber;
     }
 
+    public bool IsHost()
+    {
+        return _localUserNumber == 0;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if(sessionStarted == true)
+        damageThisRound = baseDamageThisRound + damageThisRoundAddition;
+
+        if(sessionStarted == true && _roundFinishState == false && sessionFinished == false)
         {
             // Reset the current turn if _currentTurn is over the amount of actors present.
             FixCurrentTurnCycle();
@@ -120,13 +158,23 @@ public class SchizojackBackend : MonoBehaviour
             // Debug text for host.
             handText.text = CardsToString(_actors[_localUserNumber].actorDeck);
             deckText.text = CardsToString(_actualDeck);
-
-            // If animation finished for current actor, move to next actor.
-            if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
+            if (_actors[_currentTurn].actorDead == true)
+            {
+                _currentTurn++;
+            }
+            // If animation finished for current actor, and they did a finalizing action, move to next actor.
+            else if (_frontEnd.Actors[_currentTurn].finishedAnimation == true && _actorTurnFinalizer == true)
             {
                 _frontEnd.Actors[_currentTurn].finishedAnimation = false;
                 _actorActedThisTurn = false;
+                _actorTurnFinalizer = false;
                 _currentTurn++;
+            }
+            // If animation finished for current actor, but they used a non-finalizing action.
+            else if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
+            {
+                _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+                _actorActedThisTurn = false;
             }
 
             FixCurrentTurnCycle();
@@ -171,6 +219,11 @@ public class SchizojackBackend : MonoBehaviour
 
             UpdateGameState();
 
+            if(IsHost())
+            {
+                OwnerUpdateCycle();
+            }
+
             // Host's buttons.
             if (_actors[_localUserNumber].actorLost)
             {
@@ -183,11 +236,53 @@ public class SchizojackBackend : MonoBehaviour
 
             shuffleButton.interactable = _canShuffle;
         }
+        else if(_roundFinishState == true && sessionFinished == false && _roundFinishRan == false)
+        {
+            _roundFinishRan = true;
+            foreach (Actor actor in _actors)
+            {
+                actor.CalculateDeckValues();
+                if (actor.DeckValueOverTarget(blackjackTarget))
+                {
+                    actor.actorLost = true;
+                    actor.AddDamage(damageThisRound);
+                    if (actor.actorDamaged >= 10)
+                    {
+                        actor.actorDead = true;
+                    }
+                }
+                else if (actor.DeckValueIsTarget(blackjackTarget))
+                {
+                    actor.actorWon = true;
+                }
+            }
+
+            UpdateGameState();
+            for (int i = 0; i < _actors.Count; i++)
+                Debug.Log($"Actor{i}'s stats : DamageTaken = {_actors[i].actorDamaged}, ActorLost = {_actors[i].actorLost}, ActorWon = {_actors[i].actorWon}, ActorDead = {_actors[i].actorDead}");
+
+            if (_actors.Count(x => x.actorWon) == 1 && _actors.Count(x => x.actorDead) == _actors.Count-1)
+            {
+                sessionFinished = true;
+                Debug.Log($"Session Finished Bool : {sessionFinished}");
+            }
+
+            if(sessionFinished == false && IsHost())
+            {
+                _networkBackEnd.StartNewRoundRpc();
+            }
+        }
     }
 
     private void OwnerUpdateCycle()
     {
-
+        if (_roundFinishState == false && _roundFinishRan == false)
+        {
+            if (standsInARow == _actors.Count)
+            {
+                _networkBackEnd.FinishCurrentRoundRpc();
+            }
+        }
     }
     private void ClientUpdateCycle()
     {
@@ -203,33 +298,60 @@ public class SchizojackBackend : MonoBehaviour
         }
     }
 
+    public void FinishCurrentRound()
+    {
+        _currentTurn = 0;
+        standsInARow = 0;
+        _roundFinishState = true;
+    }
+    public void StartNewRound()
+    {
+        _currentTurn = 0;
+
+        RoundDeckReset();
+
+        standsInARow = 0;
+        _actorActedThisTurn = false;
+        _actorTurnFinalizer = false;
+        _roundFinishState = false;
+        _roundFinishRan = false;
+    }
+
+    public void ChangeBlackjackTarget(int newTarget)
+    {
+        blackjackTarget = newTarget;
+    }
+
     public void UpdateGameState()
     {
         actorStateText.text = "";
 
-        _actors[_localUserNumber].deckValueLow = DeckValue(_actors[_localUserNumber].actorDeck, false);
-        _actors[_localUserNumber].deckValueHigh = DeckValue(_actors[_localUserNumber].actorDeck, true);
+        var actor = _actors[_localUserNumber];
+        actor.CalculateDeckValues();
+
+        // Convert deck values to readable string
+        string valuesText = string.Join(", ", actor.deckValues);
 
         // Local actor text
-        if (_actors[_localUserNumber].deckValueLow > 21 && _actors[_localUserNumber].deckValueHigh > 21)
+        if (actor.DeckValueOverTarget(blackjackTarget))
         {
-            gameStateText.text = $"Hand is over 21, you loose. Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
-            _actors[_localUserNumber].actorLost = true;
+            gameStateText.text = $"Hand is over {blackjackTarget}, you lose. Your hand is worth {valuesText}";
         }
-        else if (_actors[_localUserNumber].deckValueLow == 21 || _actors[_localUserNumber].deckValueHigh == 21)
+        else if (actor.DeckValueIsTarget(blackjackTarget))
         {
-            gameStateText.text = $"You win, Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
-            _actors[_localUserNumber].actorWon = true;
+            gameStateText.text = $"You win! Your hand is worth {valuesText}";
         }
         else
         {
-            gameStateText.text = $"Your hand is worth {_actors[_localUserNumber].deckValueLow} with an Ace worth 1, and {_actors[_localUserNumber].deckValueHigh} with an Ace worth 11";
+            gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}";
         }
 
         // Debug text above screen
         for (int i = 0; i < _actors.Count; i++)
         {
-            actorStateText.text += $"| Actor {i + 1}'s Hand Value : L{_actors[i].deckValueLow}/H{_actors[i].deckValueHigh} |";
+            _actors[i].CalculateDeckValues();
+            string actorValues = string.Join("/", _actors[i].deckValues);
+            actorStateText.text += $"| Actor {i + 1}'s Hand Value: {actorValues} |";
         }
     }
 
@@ -260,30 +382,6 @@ public class SchizojackBackend : MonoBehaviour
         return deck.OrderBy(i => Guid.NewGuid()).ToList();
     }
 
-    public int DeckValue(List<Card> deck, bool aceHigh)
-    {
-        int _deckValue = 0;
-        foreach (Card card in deck)
-        {
-            if (card.value == 11)
-            {
-                if (aceHigh)
-                {
-                    _deckValue += 11;
-                }
-                else
-                {
-                    _deckValue += 1;
-                }
-            }
-            else
-            {
-                _deckValue += card.value;
-            }
-        }
-        return _deckValue;
-    }
-
     // Backend Functions, used to call the Network Backend
 
     public void NetworkActorHit()
@@ -293,7 +391,6 @@ public class SchizojackBackend : MonoBehaviour
             _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
         }
     }
-
     public void NetworkActorStand()
     {
         if (_actorActedThisTurn == false && IsLocalActorTurn())
@@ -310,11 +407,15 @@ public class SchizojackBackend : MonoBehaviour
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
         _actorActedThisTurn = true;
+        _actorTurnFinalizer = true;
+        standsInARow = 0;
     }
     public void ActorStand(int actorIndex)
     {
+        standsInARow += 1;
         _frontEnd.ActorStand(actorIndex);
         _actorActedThisTurn = true;
+        _actorTurnFinalizer = true;
     }
     public void ResetDecks()
     {
@@ -330,6 +431,23 @@ public class SchizojackBackend : MonoBehaviour
         UpdateGameState();
         _frontEnd.UpdateActorHands(_actors);
     }
+
+    public void RoundDeckReset()
+    {
+        _actualDeck = new List<Card>(_baseCards);
+        _actualDeck = ShuffleDeck(_actualDeck);
+        foreach (Actor actor in _actors)
+        {
+            actor.ClearDeck();
+            if(actor.actorDead == false)
+            {
+                actor.actorLost = false;
+                actor.actorWon = false;
+            }
+        }
+        _frontEnd.UpdateActorHands(_actors);
+    }
+
     public Card ActorLatestCard(int actorIndex)
     {
         return _actors[actorIndex].actorDeck.Last();
@@ -342,6 +460,8 @@ public class SchizojackBackend : MonoBehaviour
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
         _actorActedThisTurn = true;
+        _actorTurnFinalizer = true;
+        standsInARow = 0;
     }
 
     // UI Functions
@@ -382,10 +502,47 @@ public class Card
         this.suit = suit;
         this.image = image;
     }
+    // Special Trump CardInitializer
+    // SpecialSuit is always S for Special
+    // Type uses the image value
+    public Card(string specialSuit, int type)
+    {
+        this.value = 0;
+        this.suit = specialSuit;
+        this.image = type;
+    }
 
     public string cardTexturePath()
     {
         string path = "PaperCards/";
+
+        if (this.suit == "S")
+        {
+            path += "Specials/Special";
+
+            switch (this.image)
+            {
+                case 0: // Reset21
+                    path += "Reset21";
+                    break;
+                case 1: // To27
+                    path += "To27";
+                    break;
+                case 2: // To17
+                    path += "To17";
+                    break;
+                case 3: // ResetRound
+                    path += "ResetRound";
+                    break;
+                case 4: // Peek
+                    path += "Peek";
+                    break;
+                case 5: // Survivor
+                    path += "Survivor";
+                    break;
+            }
+            return path;
+        }
 
         // A = Spades, B = Hearts, C = Clubs, D = Diamonds
         switch (this.suit)
@@ -436,32 +593,84 @@ public class Card
 public class Actor
 {
     public List<Card> actorDeck { get; set; }
+    public List<Card> actorSpecialDeck { get; set; }
+    public int actorDamaged { get; set; }
     public bool actorLost { get; set; }
     public bool actorWon { get; set; }
-    public int deckValueLow { get; set; }
-    public int deckValueHigh { get; set; }
+    public bool actorDead { get; set; }
+    public List<int> deckValues { get; set; }
     public Actor()
     {
         this.actorDeck = new List<Card>();
-        actorLost = false;
-        actorWon = false;
-        deckValueLow = 0;
-        deckValueHigh = 0;
+        this.actorSpecialDeck = new List<Card>();
+        this.actorDamaged = 0;
+        this.actorLost = false;
+        this.actorWon = false;
+        this.actorDead = false;
+        this.deckValues = new List<int>();
     }
-    public Actor(List<Card> actorDeck)
+    public void CalculateDeckValues()
     {
-        this.actorDeck = actorDeck;
-        actorLost = false;
-        actorWon = false;
-        deckValueLow = 0;
-        deckValueHigh = 0;
+        deckValues.Clear();
+
+        // Start with a single base value
+        List<int> totals = new List<int> { 0 };
+
+        foreach (Card card in actorDeck)
+        {
+            List<int> newTotals = new List<int>();
+
+            foreach (int total in totals)
+            {
+                if (card.value == 11) // Ace
+                {
+                    newTotals.Add(total + 1);
+                    newTotals.Add(total + 11);
+                }
+                else
+                {
+                    newTotals.Add(total + card.value);
+                }
+            }
+
+            totals = newTotals;
+        }
+
+        // Optional: remove duplicates
+        deckValues = totals.Distinct().ToList();
+    }
+    public bool DeckValueOverTarget(int target)
+    {
+        return this.deckValues.All(x => x > target);
+    }
+    public bool DeckValueIsTarget(int target)
+    {
+        return this.deckValues.Any(x => x == target);
+    }
+    public void AddDamage(int damage)
+    {
+        this.actorDamaged += damage;
+    }
+    public void SetDamaged(int damage)
+    {
+        this.actorDamaged = damage;
+    }
+    public void ClearDeck()
+    {
+        this.actorDeck.Clear();
+    }
+    public void ClearSpecialDeck()
+    {
+        this.actorSpecialDeck.Clear();
     }
     public void Reset()
     {
-        actorDeck.Clear();
-        actorLost = false;
-        actorWon = false;
-        deckValueLow = 0;
-        deckValueHigh = 0;
+        this.actorDeck.Clear();
+        this.actorSpecialDeck.Clear();
+        this.actorDamaged = 0;
+        this.actorLost = false;
+        this.actorWon = false;
+        this.actorDead = false;
+        this.deckValues = new List<int>();
     }
 }

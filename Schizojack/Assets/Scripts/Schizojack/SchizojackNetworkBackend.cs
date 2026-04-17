@@ -19,12 +19,6 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         _backEnd = this.GetComponent<SchizojackBackend>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     [Rpc(SendTo.Everyone)]
     public void ResetDecksRpc()
     {
@@ -62,5 +56,17 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         _backEnd.InitializeActors();
         startGameButton.SetActive(false);
         Debug.Log("Started Session");
+    }
+    [Rpc(SendTo.Everyone)]
+    public void FinishCurrentRoundRpc()
+    {
+        _backEnd.FinishCurrentRound();
+        Debug.Log("Finishing Round");
+    }
+    [Rpc(SendTo.Everyone)]
+    public void StartNewRoundRpc()
+    {
+        _backEnd.StartNewRound();
+        Debug.Log("Starting New Round");
     }
 }
