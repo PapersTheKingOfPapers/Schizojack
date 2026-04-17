@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class PlayerInitializer : NetworkBehaviour
 {
-    public NetworkVariable<int> PlayerIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> PlayerIndex = new NetworkVariable<int>(
+        -1,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
     private bool _initialized = false;
     public override void OnNetworkSpawn()
@@ -14,12 +18,17 @@ public class PlayerInitializer : NetworkBehaviour
 
         PlayerIndex.OnValueChanged += OnIndexChanged;
 
-        if (PlayerIndex.Value != -1)
+        // Handle already-set value (host case)
+        if (PlayerIndex.Value >= 0)
+        {
             Initialize(PlayerIndex.Value);
+        }
     }
+
     private void OnIndexChanged(int oldVal, int newVal)
     {
         if (newVal < 0) return;
+
         Initialize(newVal);
     }
 
@@ -33,7 +42,7 @@ public class PlayerInitializer : NetworkBehaviour
         var SAF = FindAnyObjectByType<SchizojackActorFrontend>();
         var actor = GetComponentInChildren<SchizojackActor>();
 
-        Debug.Log($"Registering actor {actor.name} with index {index}");
+        Debug.Log($"Registering actor {gameObject.tag} with index {index}");
 
         if (!SAF.Actors.Contains(actor))
         {
