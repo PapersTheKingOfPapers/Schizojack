@@ -61,9 +61,10 @@ public class SchizojackBackend : MonoBehaviour
 
     private bool _canShuffle = true;
 
-    private bool[] _botActors = { false, true, true, true }; // 0 is always false, for it is the host.
+    // private bool[] _botActors = { false, true, true, true }; // 0 is always false, for it is the host.
                                                              // 1,2,3 can be either true or false, depending
                                                              // on how many players there are.
+                                                             // Un-used for the time being.
 
     private int _currentTurn = 0; //  Who's turn it is
 
@@ -371,7 +372,6 @@ public class SchizojackBackend : MonoBehaviour
 
         ChangeBlackjackTarget(21); 
         standsInARow = 0;
-        _actorActedThisTurn = false;
         _actorTurnFinalizer = false;
         _roundFinishState = false;
         _roundFinishRan = false;
