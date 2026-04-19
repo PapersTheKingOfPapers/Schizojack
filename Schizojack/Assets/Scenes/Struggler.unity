@@ -2192,6 +2192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: <i><b>Fiver</b></i>
   itemDescription: This card holds a value of <i><b><color=#FF0000>five</color></b></i>
+  trumpCardType: 0
 --- !u!23 &215028701
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4423,6 +4424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: ??????????. ?
   itemDescription: "Hello, Dave\n\nSincerely,\n\t\tYours truly, \nDave"
+  trumpCardType: 0
 --- !u!65 &382734092
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4568,7 +4570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &404978856
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5824,6 +5826,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Bazooka
   itemDescription: Kaboom Kablow
+  trumpCardType: 0
 --- !u!65 &601157758
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9496,6 +9499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Box
   itemDescription: "Its a fucking box \nfuck you 3"
+  trumpCardType: 0
 --- !u!23 &906098651
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13284,6 +13288,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Box
   itemDescription: Heres a desc
+  trumpCardType: 0
 --- !u!65 &1105845863
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13395,59 +13400,59 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 831.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 93
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 415.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -149.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5677651636393310292, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_Name
-      value: HostButtonUi
+      value: HostButtonUi (TURN OFF LATER)
       objectReference: {fileID: 0}
     - target: {fileID: 5677651636393310292, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 831.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 93
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 415.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -46.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7093440552660385085, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_Pivot.x
@@ -13705,6 +13710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Perfect draw
   itemDescription: When used, you will draw the best possible card from the deck.
+  trumpCardType: 0
 --- !u!23 &1147226743
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14288,6 +14294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Card
   itemDescription: 'You can place down this card '
+  trumpCardType: 0
 --- !u!65 &1256710258
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16038,6 +16045,7 @@ MonoBehaviour:
   itemDescription: 'AJJAS
 
 '
+  trumpCardType: 0
 --- !u!65 &1437265455
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16841,6 +16849,7 @@ MonoBehaviour:
   deckText: {fileID: 415300784}
   gameStateText: {fileID: 1125110913}
   actorStateText: {fileID: 404978858}
+  trumpCardReturnText: {fileID: 1879010215}
   hitCardButton: {fileID: 852193537}
   shuffleButton: {fileID: 912821141}
   localUserCamera: {fileID: 0}
@@ -16851,10 +16860,15 @@ MonoBehaviour:
   baseDamageThisRound: 2
   damageThisRoundAddition: 0
   damageThisRound: 0
+  _trumpCardUsed: 0
   sessionFinished: 0
   _inputActionAssets: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   CardPrefab: {fileID: 8726130458335063973, guid: b2f7fe082a6d9e643b075f0c4f2b7ef4, type: 3}
   playerHandGO: {fileID: 963440624}
+  trumpActorIndex: 0
+  trumpCardType: 0
+  trumpTargetIndex: 0
+  trumpText: 
 --- !u!4 &1483317345
 Transform:
   m_ObjectHideFlags: 0
@@ -20280,6 +20294,7 @@ MonoBehaviour:
   itemTitle: Weird Box
   itemDescription: Its an extremely weird looking box, I actually don't think its
     a box.
+  trumpCardType: 0
 --- !u!65 &1758389548
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20796,12 +20811,12 @@ GameObject:
   - component: {fileID: 1845883702}
   - component: {fileID: 1845883701}
   m_Layer: 0
-  m_Name: Network Manager
+  m_Name: Network Manager (DISABLE LATER)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1845883701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21263,7 +21278,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Trump Card Return Text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -22043,6 +22058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDescription
   itemTitle: Box
   itemDescription: 'Its a  box '
+  trumpCardType: 0
 --- !u!23 &2033243645
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -7,4 +7,6 @@ public class ItemDescription : MonoBehaviour
 
     [TextArea(5, 20)]
     public string itemDescription;
+
+    [HideInInspector] public int trumpCardType;
 }

@@ -40,4 +40,12 @@ public class SchizojackActorFrontend : MonoBehaviour
             Actors[i].UpdateCards();
         }
     }
+    public void UpdateActorDeck(List<Actor> backEndActors)
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            Actors[i].tempCards = new List<Card>(backEndActors[i].actorDeck);
+            Actors[i].tempCards.AddRange(backEndActors[i].actorSpecialDeck);
+        }
+    }
 }

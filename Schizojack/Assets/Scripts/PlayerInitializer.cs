@@ -43,6 +43,8 @@ public class PlayerInitializer : NetworkBehaviour
         var SAF = FindAnyObjectByType<SchizojackActorFrontend>();
         var actor = GetComponentInChildren<SchizojackActor>();
 
+        actor.gameObject.tag = $"Actor{index}";
+
         Debug.Log($"Registering actor {gameObject.tag} with index {index}");
 
         if (!SAF.Actors.Contains(actor))

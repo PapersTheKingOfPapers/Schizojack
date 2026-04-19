@@ -87,4 +87,9 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     {
         _backEnd.TrumpCardUsageClient(actorIndex, type, targetIndex, text);
     }
+    [Rpc(SendTo.Everyone)]
+    public void GiveTrumpCardRpc(int actorIndex, int type)
+    {
+        _backEnd.GiveTrumpCard(actorIndex, type);
+    }
 }

@@ -6,10 +6,12 @@ using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditor.Hardware;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 using static Unity.Collections.AllocatorManager;
 
 [RequireComponent(typeof(SchizojackActorFrontend))]
@@ -84,7 +86,8 @@ public class SchizojackBackend : MonoBehaviour
     [HideInInspector] public int damageThisRound = 0;
 
     private bool _roundFinishState = false;
-    private bool _roundFinishRan = false; 
+    private bool _roundFinishRan = false;
+    public bool _trumpCardUsed = false;
 
     [HideInInspector] public bool sessionFinished = false;
 
@@ -99,6 +102,11 @@ public class SchizojackBackend : MonoBehaviour
     public GameObject playerHandGO;
 
     private LayerMask layerMask;
+
+    [HideInInspector] public int trumpActorIndex;
+    [HideInInspector] public int trumpCardType;
+    [HideInInspector] public int trumpTargetIndex;
+    [HideInInspector] public string trumpText;
 
     private void Awake()
     {
@@ -133,18 +141,13 @@ public class SchizojackBackend : MonoBehaviour
         foreach (var actor in _frontEnd.Actors)
         {
             _actors.Add(new Actor());
+            actor._SB = this;
         }
         
         ResetDecks();
+        StartNewRound();
         sessionStarted = true;
-        if(_localUserNumber == 0)
-        {
-            deckText.gameObject.SetActive(true);
-        }
-        else
-        {
-            deckText.gameObject.SetActive(false);
-        }
+        deckText.gameObject.SetActive(false);
     }
 
     public bool IsLocalActorTurn()
@@ -165,6 +168,8 @@ public class SchizojackBackend : MonoBehaviour
         {
             // Reset the current turn if _currentTurn is over the amount of actors present.
             FixCurrentTurnCycle();
+
+            UseTrumpCardLoop();
 
             // Debug text for host.
             handText.text = CardsToString(_actors[_localUserNumber].actorDeck);
@@ -266,7 +271,7 @@ public class SchizojackBackend : MonoBehaviour
             {
                 if (_actors.Count(x => x.actorWon) != 0)
                 {
-                    if (actor.DeckValueOverTarget(blackjackTarget))
+                    if (!actor.DeckValueIsTarget(blackjackTarget))
                     {
                         actor.actorLost = true;
                         if (_cantDieThisRound == false)
@@ -352,11 +357,30 @@ public class SchizojackBackend : MonoBehaviour
 
         RoundDeckReset();
 
+        if (IsHost())
+        {
+            for (int i = 0; i < _actors.Count; i++)
+            {
+                Card trump1 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
+                Card trump2 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
+
+                _networkBackEnd.GiveTrumpCardRpc(i, trump1.image);
+                _networkBackEnd.GiveTrumpCardRpc(i, trump2.image);
+            }
+        }
+
+        ChangeBlackjackTarget(21); 
         standsInARow = 0;
         _actorActedThisTurn = false;
         _actorTurnFinalizer = false;
         _roundFinishState = false;
         _roundFinishRan = false;
+    }
+    
+    public void GiveTrumpCard(int actorIndex, int type)
+    {
+        _actors[actorIndex].actorSpecialDeck.Add(new Card("S", type));
+        _frontEnd.UpdateActorHands(_actors);
     }
 
     public void RequestTrumpCardUsage(int actorIndex, int cardType, int targetIndex)
@@ -378,37 +402,54 @@ public class SchizojackBackend : MonoBehaviour
         }
     }
 
+    public void UseTrumpCardLoop()
+    {   
+        if(_frontEnd.Actors[_currentTurn].finishedAnimation == true && _trumpCardUsed == true)
+        {
+            switch (trumpCardType)
+            {
+                case 0: //Reset21
+                    ChangeBlackjackTarget(21);
+                    break;
+                case 1: //To27
+                    ChangeBlackjackTarget(27);
+                    break;
+                case 2: //To17
+                    ChangeBlackjackTarget(17);
+                    break;
+                case 3: //RoundReset
+                    RoundDeckReset();
+                    TrumpCardReturnText($"Actor{trumpActorIndex} has restart the current round!");
+                    _currentTurn = 0;
+                    break;
+                case 4: //Peek
+                    if (IsLocalActorTurn())
+                    {
+                        TrumpCardReturnText($"Next card in the deck is {trumpText}.");
+                    }
+                    break;
+                case 5: //Survivor
+                    _cantDieThisRound = true;
+                    break;
+            }
+            _trumpCardUsed = false;
+            _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+        }
+    }
+
     public void TrumpCardUsageClient(int actorIndex, int cardType, int targetIndex, string text)
     {
-        switch (cardType)
-        {
-            case 0: //Reset21
-                ChangeBlackjackTarget(21);
-                break;
-            case 1: //To27
-                ChangeBlackjackTarget(27);
-                break;
-            case 2: //To17
-                ChangeBlackjackTarget(17);
-                break;
-            case 3: //RoundReset
-                RoundDeckReset();
-                _currentTurn = 0;
-                break;
-            case 4: //Peek
-                if (IsLocalActorTurn())
-                {
-                    TrumpCardReturnText($"Next card in the deck is {text}.");
-                }
-                break;
-            case 5: //Survivor
-                _cantDieThisRound = true;
-                break;
-        }
+        _frontEnd.Actors[actorIndex].UpdateAnimatedCard(new Card("S", cardType));
+        _frontEnd.ActorThrow(actorIndex);
+        trumpActorIndex = actorIndex;
+        trumpCardType = cardType;
+        trumpTargetIndex = targetIndex;
+        trumpText = text;
+        _trumpCardUsed = true;
         _actors[actorIndex].actorSpecialDeck.Remove(
-            _actors[actorIndex].actorSpecialDeck.Find(c => c.suit == "S" && c.value == cardType)
+            _actors[actorIndex].actorSpecialDeck.Find(c => c.suit == "S" && c.image == cardType)
             );
-        _frontEnd.UpdateActorHands(_actors);
+        _frontEnd.UpdateActorDeck(_actors);
     }
 
     public void SessionOver(int winnerIndex)
@@ -451,6 +492,7 @@ public class SchizojackBackend : MonoBehaviour
         {
             _actors[i].CalculateDeckValues();
             string actorValues = string.Join("/", _actors[i].deckValues);
+            _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nBet: {damageThisRound}\r\nTarget: {blackjackTarget}\r\nDeck Value: {actorValues}\r\n";
             actorStateText.text += $"| Actor {i + 1}'s Hand Value: {actorValues} |";
         }
     }
@@ -484,7 +526,7 @@ public class SchizojackBackend : MonoBehaviour
 
     // Backend Functions, used to call the Network Backend
 
-    public void NetworkActorHit()
+    public void NetworkActorHit() // Also used for selecting trump cards.
     {
         if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false)
         {
@@ -495,6 +537,10 @@ public class SchizojackBackend : MonoBehaviour
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("TableLayer"))
                 {
                     _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
+                }
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("CardLayer") && hit.transform.TryGetComponent(out ItemDescription itemDescription))
+                {
+                    _networkBackEnd.ActorTrumpCardUseRequestRpc(_localUserNumber,itemDescription.trumpCardType,0);
                 }
             }
         }
@@ -522,6 +568,7 @@ public class SchizojackBackend : MonoBehaviour
         _actors[actorIndex].actorDeck = CardHit(_actors[actorIndex].actorDeck);
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
+        _frontEnd.UpdateActorDeck(_actors);
         TrumpCardReturnText("");
         _actorActedThisTurn = true;
         _actorTurnFinalizer = true;
@@ -575,6 +622,7 @@ public class SchizojackBackend : MonoBehaviour
         _actors[actorIndex].actorDeck.Add(card);
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
+        _frontEnd.UpdateActorDeck(_actors);
         TrumpCardReturnText("");
         _actorActedThisTurn = true;
         _actorTurnFinalizer = true;
@@ -624,6 +672,14 @@ public class Card
         this.suit = suit;
         this.image = image;
     }
+
+    public Card(Card card)
+    {
+        this.value = card.value;
+        this.suit = card.suit;
+        this.image = card.image;
+    }
+
     // Special Trump CardInitializer
     // SpecialSuit is always S for Special
     // Type uses the image value
