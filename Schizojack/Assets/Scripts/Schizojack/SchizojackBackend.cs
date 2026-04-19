@@ -372,6 +372,7 @@ public class SchizojackBackend : MonoBehaviour
 
         ChangeBlackjackTarget(21); 
         standsInARow = 0;
+        _actorActedThisTurn = false;
         _actorTurnFinalizer = false;
         _roundFinishState = false;
         _roundFinishRan = false;
