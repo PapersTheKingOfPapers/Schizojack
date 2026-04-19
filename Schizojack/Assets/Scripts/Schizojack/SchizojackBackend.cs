@@ -184,9 +184,9 @@ public class SchizojackBackend : MonoBehaviour
             // If animation finished for current actor, and they did a finalizing action, move to next actor.
             if (_frontEnd.Actors[_currentTurn].finishedAnimation == true && _actorTurnFinalizer == true)
             {
-                _currentTurn++;
                 _actorActedThisTurn = false;
                 _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+                _currentTurn++;
                 _actorTurnFinalizer = false;
             }
             // If animation finished for current actor, but they used a non-finalizing action.
@@ -372,7 +372,7 @@ public class SchizojackBackend : MonoBehaviour
 
         ChangeBlackjackTarget(21); 
         standsInARow = 0;
-        _actorActedThisTurn = false;     
+        _actorActedThisTurn = false;
         _actorTurnFinalizer = false;
         _roundFinishState = false;
         _roundFinishRan = false;
