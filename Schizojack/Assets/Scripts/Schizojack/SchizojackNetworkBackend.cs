@@ -69,4 +69,22 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         _backEnd.StartNewRound();
         Debug.Log("Starting New Round");
     }
+
+    [Rpc(SendTo.Everyone)]
+    public void SessionOverRpc(int winnerIndex)
+    {
+        _backEnd.SessionOver(winnerIndex);
+        Debug.Log("Session Over RPC");
+    }
+
+    [Rpc(SendTo.Server)]
+    public void ActorTrumpCardUseRequestRpc(int actorIndex, int type, int targetIndex)
+    {
+        _backEnd.TrumpCardUsage(actorIndex, type, targetIndex);
+    }
+    [Rpc(SendTo.Everyone)]
+    public void ActorTrumpCardUseEveryoneRpc(int actorIndex, int type, int targetIndex, string text)
+    {
+        _backEnd.TrumpCardUsageClient(actorIndex, type, targetIndex, text);
+    }
 }

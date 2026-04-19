@@ -2,6 +2,7 @@ using System.Globalization;
 using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class PlayerInitializer : NetworkBehaviour
 {
@@ -53,9 +54,11 @@ public class PlayerInitializer : NetworkBehaviour
         {
             var SNB = FindAnyObjectByType<SchizojackNetworkBackend>();
             var SB = FindAnyObjectByType<SchizojackBackend>();
+            var CAM = actor.GetComponentInChildren<Camera>();
 
             SNB._localUserNumber = index;
             SB._localUserNumber = index;
+            SB.localUserCamera = CAM;
 
             Debug.Log($"[CLIENT] Local user number: {index}");
         }

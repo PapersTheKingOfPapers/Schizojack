@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ActorGameSessionMask-Head
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: ActorArmature
+    m_Weight: 1
+  - m_Path: ActorArmature/Root
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Foot_LIK
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Foot_LIK/Foot_LIK_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Foot_RIK
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Foot_RIK/Foot_RIK_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Hand_LIK
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Hand_LIK/Hand_LIK_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Hand_RIK
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Hand_RIK/Hand_RIK_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/LeftArmIKPoleTarget
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/LeftArmIKPoleTarget/LeftArmIKPoleTarget_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/LeftLegIKPoleTarget
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/LeftLegIKPoleTarget/LeftLegIKPoleTarget_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_L/Calf_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_L/Calf_L/Foot_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_L/Calf_L/Foot_L/Toe_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_L/Calf_L/Foot_L/Toe_L/Toe_L_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_R/Calf_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_R/Calf_R/Foot_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_R/Calf_R/Foot_R/Toe_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Hips/Thigh_R/Calf_R/Foot_R/Toe_R/Toe_R_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Neck
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Neck/Head
+    m_Weight: 0
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Neck/Head/Camera
+    m_Weight: 0
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Neck/Head/Head_end
+    m_Weight: 0
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Finger1_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Finger1_L/Finger2_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Finger1_L/Finger2_L/Finger3_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Finger1_L/Finger2_L/Finger3_L/Finger3_L_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Thumb1_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Thumb1_L/Thumb2_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Thumb1_L/Thumb2_L/Thumb3_L
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_L/Upperarm_L/Lowerarm_L/Hand_L/Thumb1_L/Thumb2_L/Thumb3_L/Thumb3_L_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Finger1_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Finger1_R/Finger2_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Finger1_R/Finger2_R/Finger3_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Finger1_R/Finger2_R/Finger3_R/Finger3_R_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Thumb1_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Thumb1_R/Thumb2_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Thumb1_R/Thumb2_R/Thumb3_R
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/Pelvis/Spine1/Spine2/Shoulder_R/Upperarm_R/Lowerarm_R/Hand_R/Thumb1_R/Thumb2_R/Thumb3_R/Thumb3_R_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/RightArmIKPoleTarget
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/RightArmIKPoleTarget/RightArmIKPoleTarget_end
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/RightLegIKPoleTarget
+    m_Weight: 1
+  - m_Path: ActorArmature/Root/RightLegIKPoleTarget/RightLegIKPoleTarget_end
+    m_Weight: 1
+  - m_Path: Body
+    m_Weight: 1
+  - m_Path: CardArmature
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Bottom_1
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Bottom_1/Card_Bottom_2
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Bottom_1/Card_Bottom_2/Card_Bottom_2_end
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Top_1
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Top_1/Card_Top_2
+    m_Weight: 1
+  - m_Path: CardArmature/Card_Root/Card_Top_1/Card_Top_2/Card_Top_2_end
+    m_Weight: 1
+  - m_Path: CardFloppy
+    m_Weight: 1
+  - m_Path: CardStatic
+    m_Weight: 1
+  - m_Path: Cube.015
+    m_Weight: 1
+  - m_Path: HeadTemp
+    m_Weight: 1
+  - m_Path: TableCardDebug
+    m_Weight: 1

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Unity.Netcode;
@@ -40,7 +41,7 @@ public class SchizojackBackend : MonoBehaviour
     List<Card> _specialCards = new List<Card>
     {
         new Card("S", 0), new Card("S", 1), new Card("S", 2), new Card("S", 3),
-         new Card("S", 4), new Card("S", 5)
+        new Card("S", 4), new Card("S", 5)
     };
 
     List<Card> _actualDeck = new List<Card>();
@@ -51,6 +52,7 @@ public class SchizojackBackend : MonoBehaviour
     public TMP_Text deckText;
     public TMP_Text gameStateText;
     public TMP_Text actorStateText;
+    public TMP_Text trumpCardReturnText;
 
     public Button hitCardButton;
     public Button shuffleButton;
@@ -63,6 +65,7 @@ public class SchizojackBackend : MonoBehaviour
 
     private int _currentTurn = 0; //  Who's turn it is
 
+    public Camera localUserCamera;
     [HideInInspector] public int _localUserNumber = 0;
 
     private bool _actorActedThisTurn = false; // If the current player (the one above this) has acted this round.
@@ -87,11 +90,20 @@ public class SchizojackBackend : MonoBehaviour
 
     [SerializeField] private InputActionAsset _inputActionAssets;
 
+    private bool _cantDieThisRound = false;
+
     private InputAction _cardHit;
     private InputAction _cardStand;
 
     public GameObject CardPrefab;
     public GameObject playerHandGO;
+
+    private LayerMask layerMask;
+
+    private void Awake()
+    {
+        layerMask = LayerMask.GetMask("Default");
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -139,7 +151,6 @@ public class SchizojackBackend : MonoBehaviour
     {
         return _currentTurn == _localUserNumber;
     }
-
     public bool IsHost()
     {
         return _localUserNumber == 0;
@@ -158,12 +169,14 @@ public class SchizojackBackend : MonoBehaviour
             // Debug text for host.
             handText.text = CardsToString(_actors[_localUserNumber].actorDeck);
             deckText.text = CardsToString(_actualDeck);
-            if (_actors[_currentTurn].actorDead == true)
-            {
+
+            while (_actors[_currentTurn].actorDead) {
                 _currentTurn++;
+                FixCurrentTurnCycle();
             }
+             
             // If animation finished for current actor, and they did a finalizing action, move to next actor.
-            else if (_frontEnd.Actors[_currentTurn].finishedAnimation == true && _actorTurnFinalizer == true)
+            if (_frontEnd.Actors[_currentTurn].finishedAnimation == true && _actorTurnFinalizer == true)
             {
                 _frontEnd.Actors[_currentTurn].finishedAnimation = false;
                 _actorActedThisTurn = false;
@@ -239,32 +252,61 @@ public class SchizojackBackend : MonoBehaviour
         else if(_roundFinishState == true && sessionFinished == false && _roundFinishRan == false)
         {
             _roundFinishRan = true;
+            //Check Winners
             foreach (Actor actor in _actors)
             {
                 actor.CalculateDeckValues();
-                if (actor.DeckValueOverTarget(blackjackTarget))
-                {
-                    actor.actorLost = true;
-                    actor.AddDamage(damageThisRound);
-                    if (actor.actorDamaged >= 10)
-                    {
-                        actor.actorDead = true;
-                    }
-                }
-                else if (actor.DeckValueIsTarget(blackjackTarget))
+                if (actor.DeckValueIsTarget(blackjackTarget))
                 {
                     actor.actorWon = true;
                 }
             }
+            //Take Damage
+            foreach (Actor actor in _actors)
+            {
+                if (_actors.Count(x => x.actorWon) != 0)
+                {
+                    if (actor.DeckValueOverTarget(blackjackTarget))
+                    {
+                        actor.actorLost = true;
+                        if (_cantDieThisRound == false)
+                        {
+                            actor.AddDamage(damageThisRound);
+                            if (actor.actorDamaged >= 10)
+                            {
+                                actor.actorDead = true;
+                            }
+                        }
+                        else
+                        {
+                            int healthAfterDamage = actor.actorDamaged + damageThisRound;
+                            if (healthAfterDamage >= 10)
+                            {
+                                actor.SetDamaged(9);
+                            }
+                            else
+                            {
+                                actor.AddDamage(damageThisRound);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(_cantDieThisRound == true)
+                _cantDieThisRound = false;
 
             UpdateGameState();
             for (int i = 0; i < _actors.Count; i++)
                 Debug.Log($"Actor{i}'s stats : DamageTaken = {_actors[i].actorDamaged}, ActorLost = {_actors[i].actorLost}, ActorWon = {_actors[i].actorWon}, ActorDead = {_actors[i].actorDead}");
 
+            //Session over check
             if (_actors.Count(x => x.actorWon) == 1 && _actors.Count(x => x.actorDead) == _actors.Count-1)
             {
                 sessionFinished = true;
+                int winnerIndex = _actors.FindIndex(a => a.actorWon);
                 Debug.Log($"Session Finished Bool : {sessionFinished}");
+                _networkBackEnd.SessionOverRpc(winnerIndex);
             }
 
             if(sessionFinished == false && IsHost())
@@ -317,6 +359,64 @@ public class SchizojackBackend : MonoBehaviour
         _roundFinishRan = false;
     }
 
+    public void RequestTrumpCardUsage(int actorIndex, int cardType, int targetIndex)
+    {
+        _networkBackEnd.ActorTrumpCardUseRequestRpc(actorIndex, cardType, targetIndex);
+    }
+
+    public void TrumpCardUsage(int actorIndex, int cardType, int targetIndex)
+    {
+        switch (cardType)
+        {
+            default:
+                _networkBackEnd.ActorTrumpCardUseEveryoneRpc(actorIndex, cardType, targetIndex, "");
+                break;
+            case 4:
+                _networkBackEnd.ActorTrumpCardUseEveryoneRpc(actorIndex, cardType, targetIndex, _actualDeck.First().cardFancyName());
+                break;
+
+        }
+    }
+
+    public void TrumpCardUsageClient(int actorIndex, int cardType, int targetIndex, string text)
+    {
+        switch (cardType)
+        {
+            case 0: //Reset21
+                ChangeBlackjackTarget(21);
+                break;
+            case 1: //To27
+                ChangeBlackjackTarget(27);
+                break;
+            case 2: //To17
+                ChangeBlackjackTarget(17);
+                break;
+            case 3: //RoundReset
+                RoundDeckReset();
+                _currentTurn = 0;
+                break;
+            case 4: //Peek
+                if (IsLocalActorTurn())
+                {
+                    TrumpCardReturnText($"Next card in the deck is {text}.");
+                }
+                break;
+            case 5: //Survivor
+                _cantDieThisRound = true;
+                break;
+        }
+        _actors[actorIndex].actorSpecialDeck.Remove(
+            _actors[actorIndex].actorSpecialDeck.Find(c => c.suit == "S" && c.value == cardType)
+            );
+        _frontEnd.UpdateActorHands(_actors);
+    }
+
+    public void SessionOver(int winnerIndex)
+    {
+        sessionFinished = true;
+        gameStateText.text = $"Actor{winnerIndex} is the winner and last man standing! Session is over. Please contact event hoster to restart game.";
+    }
+
     public void ChangeBlackjackTarget(int newTarget)
     {
         blackjackTarget = newTarget;
@@ -335,7 +435,7 @@ public class SchizojackBackend : MonoBehaviour
         // Local actor text
         if (actor.DeckValueOverTarget(blackjackTarget))
         {
-            gameStateText.text = $"Hand is over {blackjackTarget}, you lose. Your hand is worth {valuesText}";
+            gameStateText.text = $"Hand is over {blackjackTarget}. Your hand is worth {valuesText}";
         }
         else if (actor.DeckValueIsTarget(blackjackTarget))
         {
@@ -343,7 +443,7 @@ public class SchizojackBackend : MonoBehaviour
         }
         else
         {
-            gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}";
+            gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}. Current deck value target is {blackjackTarget}.";
         }
 
         // Debug text above screen
@@ -386,16 +486,32 @@ public class SchizojackBackend : MonoBehaviour
 
     public void NetworkActorHit()
     {
-        if(_actorActedThisTurn == false && IsLocalActorTurn())
+        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false)
         {
-            _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
+            RaycastHit hit;
+            Ray ray = localUserCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("TableLayer"))
+                {
+                    _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
+                }
+            }
         }
     }
     public void NetworkActorStand()
     {
-        if (_actorActedThisTurn == false && IsLocalActorTurn())
+        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false)
         {
-            _networkBackEnd.ActorStandRpc(_localUserNumber);
+            RaycastHit hit;
+            Ray ray = localUserCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("TableLayer"))
+                {
+                    _networkBackEnd.ActorStandRpc(_localUserNumber);
+                }
+            }
         }
     }
 
@@ -406,6 +522,7 @@ public class SchizojackBackend : MonoBehaviour
         _actors[actorIndex].actorDeck = CardHit(_actors[actorIndex].actorDeck);
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
+        TrumpCardReturnText("");
         _actorActedThisTurn = true;
         _actorTurnFinalizer = true;
         standsInARow = 0;
@@ -414,6 +531,7 @@ public class SchizojackBackend : MonoBehaviour
     {
         standsInARow += 1;
         _frontEnd.ActorStand(actorIndex);
+        TrumpCardReturnText("");
         _actorActedThisTurn = true;
         _actorTurnFinalizer = true;
     }
@@ -431,7 +549,6 @@ public class SchizojackBackend : MonoBehaviour
         UpdateGameState();
         _frontEnd.UpdateActorHands(_actors);
     }
-
     public void RoundDeckReset()
     {
         _actualDeck = new List<Card>(_baseCards);
@@ -447,7 +564,6 @@ public class SchizojackBackend : MonoBehaviour
         }
         _frontEnd.UpdateActorHands(_actors);
     }
-
     public Card ActorLatestCard(int actorIndex)
     {
         return _actors[actorIndex].actorDeck.Last();
@@ -459,6 +575,7 @@ public class SchizojackBackend : MonoBehaviour
         _actors[actorIndex].actorDeck.Add(card);
         _frontEnd.Actors[actorIndex].UpdateAnimatedCard(_actors[actorIndex].actorDeck.Last());
         _frontEnd.ActorHit(actorIndex, _actors[actorIndex].actorDeck);
+        TrumpCardReturnText("");
         _actorActedThisTurn = true;
         _actorTurnFinalizer = true;
         standsInARow = 0;
@@ -482,6 +599,11 @@ public class SchizojackBackend : MonoBehaviour
     public void ShuffleDeckUI()
     {
         _actualDeck = ShuffleDeck(_actualDeck);
+    }
+
+    public void TrumpCardReturnText(string text)
+    {
+        trumpCardReturnText.text = text;
     }
 }
 
@@ -587,6 +709,54 @@ public class Card
         }
 
         return path;
+    }
+
+    public string cardFancyName()
+    {
+        string name = "";
+        // 0/Null = Number card, uses value for image, 1 = Jack, 2 = Queen, 3 = King
+        switch (this.image)
+        {
+            case 1:
+                name += "Jack of";
+                break;
+            case 2:
+                name += "Queen of";
+                break;
+            case 3:
+                name += "King of";
+                break;
+            default:
+                if (this.value == 11)
+                {
+                    name += "Ace of ";
+                }
+                else
+                {
+                    name += $"{this.value} of";
+                }
+                break;
+        }
+
+        // A = Spades, B = Hearts, C = Clubs, D = Diamonds
+        switch (this.suit)
+        {
+            case "A":
+                name += "Spades";
+                break;
+            case "B":
+                name += "Hearts";
+                break;
+            case "C":
+                name += "Clubs";
+                break;
+            case "D":
+                name += "Diamonds";
+                break;
+            default:
+                break;
+        }
+        return name;
     }
 }
 
