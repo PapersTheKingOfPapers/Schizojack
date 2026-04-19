@@ -273,7 +273,13 @@ public class SchizojackBackend : MonoBehaviour
             }
             if (_actors.Count(x => x.actorWon) == 0)
             {
-                _actors[GetClosestActorIndex(_actors, blackjackTarget)].actorWon = true;
+                foreach (Actor actor in _actors)
+                {
+                    if (!actor.DeckValueOverTarget(blackjackTarget))
+                    {
+                        actor.actorWon = true;
+                    }
+                }
             }
             //Take Damage
             foreach (Actor actor in _actors)
