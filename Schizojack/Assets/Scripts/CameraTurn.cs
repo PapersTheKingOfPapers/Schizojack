@@ -32,11 +32,12 @@ public class CameraTurn : NetworkBehaviour
         //If not, it returns and disables the camera so it won't use it
         _Camera = _Head.GetComponentInChildren<Camera>();
 
-        /*if (!IsOwner)
+        if (!IsOwner)
         {
-            _Head.gameObject.SetActive(false);
+            //_Head.gameObject.SetActive(false);
+            _Camera.gameObject.SetActive(false);
             return;
-        }*/
+        }
 
         _Camera.fieldOfView = _defaultFov;
 
