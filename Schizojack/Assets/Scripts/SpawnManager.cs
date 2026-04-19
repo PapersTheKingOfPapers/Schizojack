@@ -16,13 +16,22 @@ public class SpawnManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        NetworkManager.SceneManager.OnLoadComplete += OnClientLoadedScene;
+
+        /*foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             SpawnPlayer(client.ClientId);
         }
 
-        NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
+        NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;*/
     }
+    private void OnClientLoadedScene(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        if (sceneName != "Struggler") return;
+
+        SpawnPlayer(clientId);
+    }
+
     private void SpawnPlayer(ulong clientId)
     {
         if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)
