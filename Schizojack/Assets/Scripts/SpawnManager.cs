@@ -14,13 +14,20 @@ public class SpawnManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
+        if (!IsServer) return;
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
+            SpawnPlayer(client.ClientId);
         }
+
+        NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
     }
     private void SpawnPlayer(ulong clientId)
     {
+        if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)
+            return;
+
         Transform spawnPoint = spawnPoints[nextSpawn % spawnPoints.Count];
 
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);

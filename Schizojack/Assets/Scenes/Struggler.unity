@@ -13380,55 +13380,59 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 831.5
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 93
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 415.75
       objectReference: {fileID: 0}
     - target: {fileID: 5535180041807524367, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -149.5
       objectReference: {fileID: 0}
     - target: {fileID: 5677651636393310292, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_Name
       value: HostButtonUi
       objectReference: {fileID: 0}
+    - target: {fileID: 5677651636393310292, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 831.5
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 93
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 415.75
       objectReference: {fileID: 0}
     - target: {fileID: 6586646461451913821, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -46.5
       objectReference: {fileID: 0}
     - target: {fileID: 7093440552660385085, guid: a576b8eb5997c5e4387785c76f770f2b, type: 3}
       propertyPath: m_Pivot.x
@@ -16799,6 +16803,12 @@ MonoBehaviour:
   shuffleButton: {fileID: 912821141}
   _localUserNumber: 0
   sessionStarted: 0
+  blackjackTarget: 21
+  standsInARow: 0
+  baseDamageThisRound: 2
+  damageThisRoundAddition: 0
+  damageThisRound: 0
+  sessionFinished: 0
   _inputActionAssets: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   CardPrefab: {fileID: 8726130458335063973, guid: b2f7fe082a6d9e643b075f0c4f2b7ef4, type: 3}
   playerHandGO: {fileID: 963440624}
@@ -20748,7 +20758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1845883701
 MonoBehaviour:
   m_ObjectHideFlags: 0

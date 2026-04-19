@@ -49,4 +49,12 @@ public class Host : MonoBehaviour
 
         hostMenuOpen = false;
     }
+
+    public void StartGame()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("Struggler", LoadSceneMode.Single); //Temp sceene
+        }
+    }
 }

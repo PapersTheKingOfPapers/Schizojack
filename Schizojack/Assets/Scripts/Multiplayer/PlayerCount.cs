@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class PlayerCount : MonoBehaviour
 {
-    [SerializeField] private TMP_Text playerCountText;
+    [SerializeField] private TMP_Text[] playerCountText;
     void Update()
     {
+        string text;
+
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
             int count = NetworkManager.Singleton.ConnectedClientsList.Count;
-            playerCountText.text = $"Players: {count}";
+            text = $"Players: {count}";
         }
         else
         {
-            playerCountText.text = "Players: 0";
+            text = "Players: 0";
+        }
+
+        foreach (var tmp in playerCountText)
+        {
+            if (tmp != null)
+                tmp.text = text;
         }
     }
 }
