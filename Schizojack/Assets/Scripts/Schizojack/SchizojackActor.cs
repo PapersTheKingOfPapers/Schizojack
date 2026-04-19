@@ -24,8 +24,8 @@ public class SchizojackActor : MonoBehaviour
     public List<Card> tempCards;
 
     [HideInInspector] public SchizojackBackend _SB;
-
-    [HideInInspector] public bool finishedAnimation;
+    
+    public bool finishedAnimation;
 
     public void FinishedAnimation()
     {
