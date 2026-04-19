@@ -8,9 +8,13 @@ public class CameraTurn : NetworkBehaviour
     [SerializeField] private Transform _Head;
     [SerializeField] private float _turnForce = 1f;
     [SerializeField] private float _SmoothTime = 0.15f;
+    [SerializeField] private Camera _Camera;
     [Header("Input")]
+    [SerializeField] private int _defaultFov = 80;
+    [SerializeField] private int _zoomedFov = 50;
     [SerializeField] private InputActionAsset Assets;
     private InputAction _look;
+    private InputAction _zoom;
 
     private Vector2 look;
     private Vector3 _baseRotation;
@@ -26,23 +30,30 @@ public class CameraTurn : NetworkBehaviour
     {
         //Checks if the client is the owner of this script
         //If not, it returns and disables the camera so it won't use it
+        _Camera = _Head.GetComponentInChildren<Camera>();
+
         if (!IsOwner)
         {
             _Head.gameObject.SetActive(false);
             return;
         }
-        
-        _baseRotation = transform.forward;
+
+        _Camera.fieldOfView = _defaultFov;
+
+        _baseRotation = _Head.transform.forward;
 
         //Inputs
         _look = Assets.FindAction("Player/Look");
         _look.Enable();
 
+        _zoom = Assets.FindAction("Player/Space");
+        _zoom.Enable();
+
         Cursor.lockState = CursorLockMode.Confined;
         _baseRotation = _Head.transform.rotation.eulerAngles;
     }
 
-    void Update()
+    void LateUpdate()
     {
         //Checks if the client is the owner of this script
         //If not, it returns
@@ -65,5 +76,8 @@ public class CameraTurn : NetworkBehaviour
 
         //Applies the Camera Rotation
         _Head.rotation = Quaternion.Euler(_currentRotation);
+
+        //Zoom the camera
+        _Camera.fieldOfView = _zoom.IsPressed() ? _zoomedFov : _defaultFov;
     }
 }
