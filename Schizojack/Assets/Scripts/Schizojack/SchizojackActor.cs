@@ -26,8 +26,6 @@ public class SchizojackActor : MonoBehaviour
 
     [HideInInspector] public SchizojackBackend _SB;
 
-    [HideInInspector] public Actor actor;
-
     public bool finishedAnimation;
 
     public void FinishedAnimation()

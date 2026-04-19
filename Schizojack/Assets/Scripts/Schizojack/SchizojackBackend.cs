@@ -859,7 +859,6 @@ public class Actor
     public bool actorWon { get; set; }
     public bool actorDead { get; set; }
     public List<int> deckValues { get; set; }
-    public ulong OwnerClientId;
     public Actor()
     {
         this.actorDeck = new List<Card>();

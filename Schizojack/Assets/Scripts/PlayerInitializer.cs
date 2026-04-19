@@ -52,8 +52,6 @@ public class PlayerInitializer : NetworkBehaviour
             SAF.Actors.Add(actor);
         }
 
-        actor._SB._actors[index].OwnerClientId = OwnerClientId;
-
         if (IsOwner)
         {
             var SNB = FindAnyObjectByType<SchizojackNetworkBackend>();
