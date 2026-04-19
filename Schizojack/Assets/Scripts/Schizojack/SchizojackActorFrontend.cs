@@ -13,22 +13,25 @@ public class SchizojackActorFrontend : MonoBehaviour
     {
         Actors[actorIndex].tempCards = new List<Card>(cards);
         Actors[actorIndex].animator.SetTrigger("HitCard");
+        Actors[actorIndex].StartBackupCoroutine();
     }
-
     public void ActorTakeCard(int actorIndex, List<Card> cards)
     {
         
         Actors[actorIndex].animator.SetTrigger("PickupCard");
+        Actors[actorIndex].StartBackupCoroutine();
     }
 
     public void ActorStand(int actorIndex)
     {
         Actors[actorIndex].animator.SetTrigger("StandCard");
+        Actors[actorIndex].StartBackupCoroutine();
     }
 
     public void ActorThrow(int actorIndex)
     {
         Actors[actorIndex].animator.SetTrigger("ThrowCard");
+        Actors[actorIndex].StartBackupCoroutine();
     }
 
     public void UpdateActorHands(List<Actor> backEndActors)

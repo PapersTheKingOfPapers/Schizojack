@@ -48,7 +48,7 @@ public class SchizojackBackend : MonoBehaviour
 
     List<Card> _actualDeck = new List<Card>();
 
-    List<Actor> _actors = new List<Actor>();
+    [HideInInspector] public List<Actor> _actors = new List<Actor>();
 
     public TMP_Text handText;
     public TMP_Text deckText;
@@ -163,6 +163,8 @@ public class SchizojackBackend : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         damageThisRound = baseDamageThisRound + damageThisRoundAddition;
 
         if(sessionStarted == true && _roundFinishState == false && sessionFinished == false)
@@ -186,6 +188,7 @@ public class SchizojackBackend : MonoBehaviour
             {
                 _actorActedThisTurn = false;
                 _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+                _frontEnd.Actors[_currentTurn].StopBackupCoroutine();
                 _currentTurn++;
                 _actorTurnFinalizer = false;
             }
@@ -193,6 +196,7 @@ public class SchizojackBackend : MonoBehaviour
             else if (_frontEnd.Actors[_currentTurn].finishedAnimation == true)
             {
                 _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+                _frontEnd.Actors[_currentTurn].StopBackupCoroutine();
                 _actorActedThisTurn = false;
             }
 
@@ -266,6 +270,10 @@ public class SchizojackBackend : MonoBehaviour
                 {
                     actor.actorWon = true;
                 }
+            }
+            if (_actors.Count(x => x.actorWon) == 0)
+            {
+                _actors[GetClosestActorIndex(_actors, blackjackTarget)].actorWon = true;
             }
             //Take Damage
             foreach (Actor actor in _actors)
@@ -525,6 +533,31 @@ public class SchizojackBackend : MonoBehaviour
         return deck.OrderBy(i => Guid.NewGuid()).ToList();
     }
 
+    public int GetClosestActorIndex(List<Actor> actors, int target)
+    {
+        int bestActorIndex = -1;
+        int bestValue = int.MinValue;
+
+        for (int i = 0; i < actors.Count; i++)
+        {
+            var actor = actors[i];
+
+            // Get best valid value for this actor (<= target)
+            int actorBest = actor.deckValues
+                .Where(v => v <= target)
+                .DefaultIfEmpty(int.MinValue)
+                .Max();
+
+            if (actorBest > bestValue)
+            {
+                bestValue = actorBest;
+                bestActorIndex = i;
+            }
+        }
+
+        return bestActorIndex;
+    }
+
     // Backend Functions, used to call the Network Backend
 
     public void NetworkActorHit() // Also used for selecting trump cards.
@@ -775,13 +808,13 @@ public class Card
         switch (this.image)
         {
             case 1:
-                name += "Jack of";
+                name += "Jack of ";
                 break;
             case 2:
-                name += "Queen of";
+                name += "Queen of ";
                 break;
             case 3:
-                name += "King of";
+                name += "King of ";
                 break;
             default:
                 if (this.value == 11)
@@ -790,7 +823,7 @@ public class Card
                 }
                 else
                 {
-                    name += $"{this.value} of";
+                    name += $"{this.value} of ";
                 }
                 break;
         }
@@ -826,6 +859,7 @@ public class Actor
     public bool actorWon { get; set; }
     public bool actorDead { get; set; }
     public List<int> deckValues { get; set; }
+    public ulong OwnerClientId;
     public Actor()
     {
         this.actorDeck = new List<Card>();

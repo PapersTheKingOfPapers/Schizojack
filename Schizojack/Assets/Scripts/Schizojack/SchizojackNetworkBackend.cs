@@ -17,6 +17,10 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     void Start()
     {
         _backEnd = this.GetComponent<SchizojackBackend>();
+        if (!IsHost)
+        {
+            startGameButton.SetActive(false);
+        }
     }
 
     [Rpc(SendTo.Everyone)]

@@ -31,7 +31,19 @@ public class SpawnManager : NetworkBehaviour
 
         SpawnPlayer(clientId);
     }
+    private void OnClientDisconnected(ulong clientId)
+    {
+        if (!IsServer) return;
 
+        foreach (var actor in _SB._actors)
+        {
+            if (actor.OwnerClientId == clientId)
+            {
+                actor.actorDead = true;
+                break;
+            }
+        }
+    }
     private void SpawnPlayer(ulong clientId)
     {
         if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)

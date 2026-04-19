@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -24,12 +25,30 @@ public class SchizojackActor : MonoBehaviour
     public List<Card> tempCards;
 
     [HideInInspector] public SchizojackBackend _SB;
-    
+
+    [HideInInspector] public Actor actor;
+
     public bool finishedAnimation;
 
     public void FinishedAnimation()
     {
         finishedAnimation = true;
+    }
+
+    public void StartBackupCoroutine()
+    {
+        StartCoroutine(BackupAnimationFinish());
+    }
+
+    public void StopBackupCoroutine()
+    {
+        StopCoroutine(BackupAnimationFinish());
+    }
+
+    public IEnumerator BackupAnimationFinish()
+    {
+        yield return new WaitForSeconds(5);
+        FinishedAnimation();
     }
 
     public void ToggleAnimatedCard(int value)
