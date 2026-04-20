@@ -496,6 +496,11 @@ public class SchizojackBackend : MonoBehaviour
             gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}. Current deck value target is {blackjackTarget}.";
         }
 
+        if(actor.actorDead == true)
+        {
+            gameStateText.text = $"You are dead. Enjoy the afterlife.";
+        }
+
         // Debug text above screen
         for (int i = 0; i < _actors.Count; i++)
         {
