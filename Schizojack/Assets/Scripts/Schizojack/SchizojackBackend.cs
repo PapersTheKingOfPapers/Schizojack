@@ -280,7 +280,7 @@ public class SchizojackBackend : MonoBehaviour
             {
                 if (_actors.Count(x => x.actorWon) != 0)
                 {
-                    if (!actor.DeckValueIsTarget(blackjackTarget))
+                    if (!actor.actorWon)
                     {
                         actor.actorLost = true;
                         if (_cantDieThisRound == false)
