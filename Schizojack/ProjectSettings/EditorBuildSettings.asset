@@ -9,10 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 04885e6d998481d4f85c8a7d79776256
   - enabled: 1
-    path: Assets/Scenes/Struggler.unity
-    guid: bb474df27127b9a44a7acb7e234bbc36
-  - enabled: 1
     path: Assets/Scenes/MainScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    guid: bb474df27127b9a44a7acb7e234bbc36
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
