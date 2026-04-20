@@ -273,13 +273,7 @@ public class SchizojackBackend : MonoBehaviour
             }
             if (_actors.Count(x => x.actorWon) == 0)
             {
-                foreach (Actor actor in _actors)
-                {
-                    if (!actor.DeckValueOverTarget(blackjackTarget))
-                    {
-                        actor.actorWon = true;
-                    }
-                }
+                _actors[GetClosestActorIndex(_actors, blackjackTarget)].actorWon = true;
             }
             //Take Damage
             foreach (Actor actor in _actors)
@@ -539,7 +533,7 @@ public class SchizojackBackend : MonoBehaviour
         return deck.OrderBy(i => Guid.NewGuid()).ToList();
     }
 
-    public int GetClosestActorIndex(List<Actor> actors, int target)
+    int GetClosestActorIndex(List<Actor> actors, int target)
     {
         int bestActorIndex = -1;
         int bestValue = int.MinValue;
@@ -548,11 +542,16 @@ public class SchizojackBackend : MonoBehaviour
         {
             var actor = actors[i];
 
-            // Get best valid value for this actor (<= target)
-            int actorBest = actor.deckValues
-                .Where(v => v <= target)
-                .DefaultIfEmpty(int.MinValue)
-                .Max();
+            if (actor.deckValues == null || actor.deckValues.Count == 0)
+                continue;
+
+            int actorBest = int.MinValue;
+
+            foreach (int v in actor.deckValues)
+            {
+                if (v <= target && v > actorBest)
+                    actorBest = v;
+            }
 
             if (actorBest > bestValue)
             {
