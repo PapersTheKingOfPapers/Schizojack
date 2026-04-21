@@ -27,7 +27,7 @@ public class SpawnManager : NetworkBehaviour
     }
     private void OnClientLoadedScene(ulong clientId, string sceneName, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
-        if (sceneName != "Struggler") return;
+        if (sceneName != "MainScene") return;
 
         SpawnPlayer(clientId);
     }
