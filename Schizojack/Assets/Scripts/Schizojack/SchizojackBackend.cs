@@ -440,6 +440,7 @@ public class SchizojackBackend : MonoBehaviour
                     _cantDieThisRound = true;
                     break;
             }
+            standsInARow = 0;
             _trumpCardUsed = false;
             _frontEnd.Actors[_currentTurn].finishedAnimation = false;
         }
@@ -505,7 +506,11 @@ public class SchizojackBackend : MonoBehaviour
         {
             _actors[i].CalculateDeckValues();
             string actorValues = string.Join("/", _actors[i].deckValues);
-            _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nBet: {damageThisRound}\r\nTarget: {blackjackTarget}\r\nDeck Value: {actorValues}\r\n";
+            if (_actors[i].actorDead == true)
+            {
+                _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nAlive: No\r\nDead: Yes\r\nTurn: {_currentTurn}";
+            }
+            _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nBet: {damageThisRound}\r\nTarget: {blackjackTarget}\r\nTurn: {_currentTurn}\r\nDeck Value: {actorValues}\r\n";
             actorStateText.text += $"| Actor {i + 1}'s Hand Value: {actorValues} |";
         }
     }
