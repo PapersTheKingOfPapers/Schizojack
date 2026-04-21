@@ -545,7 +545,8 @@ public class SchizojackBackend : MonoBehaviour
     int GetClosestActorIndex(List<Actor> actors, int target)
     {
         int bestActorIndex = -1;
-        int bestValue = int.MinValue;
+        int bestUnder = int.MinValue;
+        int bestOver = int.MaxValue;
 
         for (int i = 0; i < actors.Count; i++)
         {
@@ -554,18 +555,24 @@ public class SchizojackBackend : MonoBehaviour
             if (actor.deckValues == null || actor.deckValues.Count == 0)
                 continue;
 
-            int actorBest = int.MinValue;
-
             foreach (int v in actor.deckValues)
             {
-                if (v <= target && v > actorBest)
-                    actorBest = v;
-            }
-
-            if (actorBest > bestValue)
-            {
-                bestValue = actorBest;
-                bestActorIndex = i;
+                if (v <= target)
+                {
+                    if (v > bestUnder)
+                    {
+                        bestUnder = v;
+                        bestActorIndex = i;
+                    }
+                }
+                else
+                {
+                    if (bestUnder == int.MinValue && v < bestOver)
+                    {
+                        bestOver = v;
+                        bestActorIndex = i;
+                    }
+                }
             }
         }
 
