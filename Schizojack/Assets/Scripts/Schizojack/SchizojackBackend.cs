@@ -20,6 +20,7 @@ public class SchizojackBackend : MonoBehaviour
 {
     SchizojackActorFrontend _frontEnd;
     SchizojackNetworkBackend _networkBackEnd;
+    [SerializeField] TVSchizojackTurnScript _tvTurnScript;
 
     // A = Spades, B = Hearts, C = Clubs, D = Diamonds
     List<Card> _baseCards = new List<Card>
@@ -65,7 +66,7 @@ public class SchizojackBackend : MonoBehaviour
                                                              // on how many players there are.
                                                              // Un-used for the time being.
 
-    private int _currentTurn = 0; //  Who's turn it is
+    public int _currentTurn = 0; //  Who's turn it is
 
     public Camera localUserCamera;
     [HideInInspector] public int _localUserNumber = 0;
@@ -146,6 +147,7 @@ public class SchizojackBackend : MonoBehaviour
         
         ResetDecks();
         StartNewRound();
+        _tvTurnScript.ToggleActiveScreens();
         sessionStarted = true;
         deckText.gameObject.SetActive(false);
     }
