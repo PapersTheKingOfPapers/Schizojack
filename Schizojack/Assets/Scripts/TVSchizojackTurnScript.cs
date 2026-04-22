@@ -12,12 +12,8 @@ public class TVSchizojackTurnScript : MonoBehaviour
 
     private int _prevCurrentTurn = -1;
 
-    private int tvSeatIndex;
-
     public void ToggleActiveScreens()
     {
-        tvSeatIndex = SB._localUserNumber;
-
         for(int i = 0; i < SB._actors.Count; i++)
         {
             tvScreens[i].SetActive(true);
@@ -32,8 +28,8 @@ public class TVSchizojackTurnScript : MonoBehaviour
         {
             for(int i = 0; i< tvScreensYTObject.Length; i++)
             {
-                tvScreensYTObject[i].SetActive(tvSeatIndex == SB._currentTurn);
-                tvScreensWObject[i].SetActive(tvSeatIndex != SB._currentTurn);
+                tvScreensYTObject[i].SetActive(i == SB._currentTurn);
+                tvScreensWObject[i].SetActive(i != SB._currentTurn);
             }
             _prevCurrentTurn = SB._currentTurn;
         }
