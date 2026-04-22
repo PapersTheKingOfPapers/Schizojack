@@ -164,8 +164,6 @@ public class SchizojackBackend : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
         damageThisRound = baseDamageThisRound + damageThisRoundAddition;
 
         if(sessionStarted == true && _roundFinishState == false && sessionFinished == false)

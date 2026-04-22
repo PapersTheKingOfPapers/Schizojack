@@ -71,6 +71,7 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     public void StartNewRoundRpc()
     {
         _backEnd.StartNewRound();
+        _backEnd.baseDamageThisRound++;
         Debug.Log("Starting New Round");
     }
 
