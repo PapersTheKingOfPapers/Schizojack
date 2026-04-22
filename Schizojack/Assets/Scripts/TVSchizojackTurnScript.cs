@@ -32,8 +32,8 @@ public class TVSchizojackTurnScript : MonoBehaviour
         {
             for(int i = 0; i< tvScreensYTObject.Length; i++)
             {
-                tvScreensYTObject[i].SetActive(tvSeatIndex == SB._currentTurn);
-                tvScreensWObject[i].SetActive(tvSeatIndex != SB._currentTurn);
+                tvScreensYTObject[i].SetActive(i == SB._currentTurn);
+                tvScreensWObject[i].SetActive(i != SB._currentTurn);
             }
             _prevCurrentTurn = SB._currentTurn;
         }
