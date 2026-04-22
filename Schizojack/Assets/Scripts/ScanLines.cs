@@ -14,7 +14,7 @@ public class ScanLines : MonoBehaviour
         Rect uv = img.uvRect;
         uv.y += Time.deltaTime * speed;
 
-        if (uv.y > 100f)
+        if (uv.y > 10000f)
         {
             uv.y = 0f;
         }
