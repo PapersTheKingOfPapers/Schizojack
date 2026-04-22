@@ -2795,6 +2795,7 @@ MonoBehaviour:
   - {fileID: 1879041532}
   - {fileID: 1674558139}
   - {fileID: 899888741}
+  tvScreensWObject: []
   SB: {fileID: 1483317344}
 --- !u!4 &271663619
 Transform:
@@ -11739,10 +11740,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1573367997}
     m_Modifications:
-    - target: {fileID: 4248486466105173671, guid: bd22e0b5c0782354792ef8403a21fff6, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5179661592204307474, guid: bd22e0b5c0782354792ef8403a21fff6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.875

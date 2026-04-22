@@ -4,6 +4,7 @@ public class TVSchizojackTurnScript : MonoBehaviour
 {
     public GameObject[] tvScreens;
     public GameObject[] tvScreensYTObject;
+    public GameObject[] tvScreensWObject;
 
     [SerializeField] SchizojackBackend SB;
 
@@ -29,9 +30,10 @@ public class TVSchizojackTurnScript : MonoBehaviour
     {
         if(_prevCurrentTurn != SB._currentTurn && _active)
         {
-            foreach (GameObject go in tvScreensYTObject)
+            for(int i = 0; i< tvScreensYTObject.Length; i++)
             {
-                go.SetActive(tvSeatIndex == SB._currentTurn);
+                tvScreensYTObject[i].SetActive(tvSeatIndex == SB._currentTurn);
+                tvScreensWObject[i].SetActive(tvSeatIndex != SB._currentTurn);
             }
             _prevCurrentTurn = SB._currentTurn;
         }
