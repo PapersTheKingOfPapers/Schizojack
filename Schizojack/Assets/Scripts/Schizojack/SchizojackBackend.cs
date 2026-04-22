@@ -272,7 +272,18 @@ public class SchizojackBackend : MonoBehaviour
             }
             if (_actors.Count(x => x.actorWon) == 0)
             {
-                _actors[GetClosestActorIndex(_actors, blackjackTarget)].actorWon = true;
+                int tempIndex = GetClosestActorIndex(_actors, blackjackTarget);
+                if (tempIndex == -1)
+                {
+                    foreach (Actor actor in _actors)
+                    {
+                        actor.actorWon = true;
+                    }
+                }
+                else
+                {
+                    _actors[tempIndex].actorWon = true;
+                }
             }
             //Take Damage
             foreach (Actor actor in _actors)
@@ -546,8 +557,8 @@ public class SchizojackBackend : MonoBehaviour
     int GetClosestActorIndex(List<Actor> actors, int target)
     {
         int bestActorIndex = -1;
-        int bestUnder = int.MinValue;
-        int bestOver = int.MaxValue;
+        int bestDistance = int.MaxValue;
+        bool tie = false;
 
         for (int i = 0; i < actors.Count; i++)
         {
@@ -556,28 +567,31 @@ public class SchizojackBackend : MonoBehaviour
             if (actor.deckValues == null || actor.deckValues.Count == 0)
                 continue;
 
+            int actorBestDistance = int.MaxValue;
+
             foreach (int v in actor.deckValues)
             {
-                if (v <= target)
+                int distance = Math.Abs(v - target);
+
+                if (distance < actorBestDistance)
                 {
-                    if (v > bestUnder)
-                    {
-                        bestUnder = v;
-                        bestActorIndex = i;
-                    }
+                    actorBestDistance = distance;
                 }
-                else
-                {
-                    if (bestUnder == int.MinValue && v < bestOver)
-                    {
-                        bestOver = v;
-                        bestActorIndex = i;
-                    }
-                }
+            }
+
+            if (actorBestDistance < bestDistance)
+            {
+                bestDistance = actorBestDistance;
+                bestActorIndex = i;
+                tie = false;
+            }
+            else if (actorBestDistance == bestDistance)
+            {
+                tie = true;
             }
         }
 
-        return bestActorIndex;
+        return tie ? -1 : bestActorIndex;
     }
 
     // Backend Functions, used to call the Network Backend
