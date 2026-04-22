@@ -95,6 +95,7 @@ public class SchizojackBackend : MonoBehaviour
     [SerializeField] private InputActionAsset _inputActionAssets;
 
     private bool _cantDieThisRound = false;
+    private int _lastActionFrame = -1;
 
     private InputAction _cardHit;
     private InputAction _cardStand;
@@ -127,8 +128,21 @@ public class SchizojackBackend : MonoBehaviour
         _cardStand = _inputActionAssets.FindAction("Player/CardStand");
         _cardStand.Enable();
 
-        _cardHit.performed += _ => NetworkActorHit();
-        _cardStand.performed += _ => NetworkActorStand();
+        _cardHit.performed += _ =>
+        {
+            if (_lastActionFrame == Time.frameCount) return;
+
+            _lastActionFrame = Time.frameCount;
+            NetworkActorHit();
+        };
+
+        _cardStand.performed += _ =>
+        {
+            if (_lastActionFrame == Time.frameCount) return;
+
+            _lastActionFrame = Time.frameCount;
+            NetworkActorStand();
+        };
     }
 
     private void OnDisable()
