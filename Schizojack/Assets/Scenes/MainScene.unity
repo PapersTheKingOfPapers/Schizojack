@@ -2756,6 +2756,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1032990598}
   m_LocalEulerAnglesHint: {x: 0, y: -24.669, z: 0}
+--- !u!1 &271663617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 271663619}
+  - component: {fileID: 271663618}
+  m_Layer: 0
+  m_Name: LocalSchizojackGameMaster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &271663618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271663617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba50699913cfff4c98cebaab19e5de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TVSchizojackTurnScript
+  tvScreens:
+  - {fileID: 1133412256}
+  - {fileID: 1879041533}
+  - {fileID: 1674558140}
+  - {fileID: 899888742}
+  tvScreensYTObject:
+  - {fileID: 1133412255}
+  - {fileID: 1879041532}
+  - {fileID: 1674558139}
+  - {fileID: 899888741}
+  SB: {fileID: 1483317344}
+--- !u!4 &271663619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271663617}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.04512, y: 2, z: -2.59748}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &312673015
 GameObject:
   m_ObjectHideFlags: 0
@@ -14887,7 +14942,6 @@ GameObject:
   - component: {fileID: 1483317345}
   - component: {fileID: 1483317344}
   - component: {fileID: 1483317343}
-  - component: {fileID: 1483317348}
   - component: {fileID: 1483317346}
   - component: {fileID: 1483317347}
   m_Layer: 0
@@ -14922,7 +14976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c2ac3060046aa444bfbe8f6080a38be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SchizojackBackend
-  _tvTurnScript: {fileID: 0}
+  _tvTurnScript: {fileID: 271663618}
   handText: {fileID: 192749787}
   deckText: {fileID: 415300784}
   gameStateText: {fileID: 1125110913}
@@ -15004,29 +15058,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _localUserNumber: 0
   startGameButton: {fileID: 1439373325}
---- !u!114 &1483317348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483317342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ba50699913cfff4c98cebaab19e5de4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TVSchizojackTurnScript
-  tvScreens:
-  - {fileID: 1133412256}
-  - {fileID: 1879041533}
-  - {fileID: 1674558140}
-  - {fileID: 899888742}
-  tvScreensYTObject:
-  - {fileID: 1133412255}
-  - {fileID: 1879041532}
-  - {fileID: 1674558139}
-  - {fileID: 899888741}
-  SB: {fileID: 1483317344}
 --- !u!43 &1485507669
 Mesh:
   m_ObjectHideFlags: 0
@@ -19310,6 +19341,7 @@ SceneRoots:
   - {fileID: 5185685}
   - {fileID: 1121222212}
   - {fileID: 1483317345}
+  - {fileID: 271663619}
   - {fileID: 1636804160}
   - {fileID: 1978333892}
   - {fileID: 1845883703}
