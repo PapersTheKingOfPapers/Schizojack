@@ -40,6 +40,7 @@ public class SchizojackActor : MonoBehaviour
     public void StopBackupCoroutine()
     {
         StopCoroutine(BackupAnimationFinish());
+        StopAllCoroutines();
     }
 
     public IEnumerator BackupAnimationFinish()

@@ -445,6 +445,7 @@ public class SchizojackBackend : MonoBehaviour
             standsInARow = 0;
             _trumpCardUsed = false;
             _frontEnd.Actors[_currentTurn].finishedAnimation = false;
+            _frontEnd.Actors[_currentTurn].StopBackupCoroutine();
         }
     }
 
