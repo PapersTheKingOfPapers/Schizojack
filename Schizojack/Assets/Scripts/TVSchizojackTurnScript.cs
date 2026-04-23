@@ -31,7 +31,9 @@ public class TVSchizojackTurnScript : MonoBehaviour
         {
             for(int i = 0; i< tvScreensYTObject.Length; i++)
             {
-                tvScreens[i].GetComponent<Renderer>().materials[1] = i == SB._currentTurn ? tvScreenYTMat : tvScreenWMat;
+                var temp = tvScreens[i].GetComponent<Renderer>();
+                temp.materials[1].enableInstancing = true;
+                temp.materials[1] = i == SB._currentTurn ? tvScreenYTMat : tvScreenWMat;
                 tvScreensYTObject[i].SetActive(i == SB._currentTurn);
                 tvScreensWObject[i].SetActive(i != SB._currentTurn);
             }
