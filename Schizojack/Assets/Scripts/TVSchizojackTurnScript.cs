@@ -6,6 +6,9 @@ public class TVSchizojackTurnScript : MonoBehaviour
     public GameObject[] tvScreensYTObject;
     public GameObject[] tvScreensWObject;
 
+    public Material tvScreenYTMat;
+    public Material tvScreenWMat;
+
     [SerializeField] SchizojackBackend SB;
 
     private bool _active = false;
@@ -14,10 +17,10 @@ public class TVSchizojackTurnScript : MonoBehaviour
 
     public void ToggleActiveScreens()
     {
-        for(int i = 0; i < SB._actors.Count; i++)
+        /*for(int i = 0; i < SB._actors.Count; i++)
         {
             tvScreens[i].SetActive(true);
-        }
+        }*/
         _active = true;
     }
 
@@ -28,6 +31,7 @@ public class TVSchizojackTurnScript : MonoBehaviour
         {
             for(int i = 0; i< tvScreensYTObject.Length; i++)
             {
+                tvScreens[i].GetComponent<Renderer>().materials[1] = i == SB._currentTurn ? tvScreenYTMat : tvScreenWMat;
                 tvScreensYTObject[i].SetActive(i == SB._currentTurn);
                 tvScreensWObject[i].SetActive(i != SB._currentTurn);
             }

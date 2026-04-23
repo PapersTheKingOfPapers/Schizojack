@@ -2804,6 +2804,8 @@ MonoBehaviour:
   - {fileID: 1879041534}
   - {fileID: 1674558141}
   - {fileID: 899888743}
+  tvScreenYTMat: {fileID: 2100000, guid: 3df8a0cd8497ab641a3c4e769c652bf5, type: 2}
+  tvScreenWMat: {fileID: 2100000, guid: baf5184ed0e18284bb92d6bcfc2e146f, type: 2}
   SB: {fileID: 1483317344}
 --- !u!4 &271663619
 Transform:
