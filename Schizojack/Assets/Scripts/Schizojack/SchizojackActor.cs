@@ -116,6 +116,18 @@ public class SchizojackActor : MonoBehaviour
                             itemDes.itemTitle = "Survivor";
                             itemDes.itemDescription = "No one will die this round if they would have.";
                             break;
+                        case 6: //AddBet
+                            itemDes.itemTitle = "Capacitor";
+                            itemDes.itemDescription = "Add 1 to the current bet value. (Can be stacked)";
+                            break;
+                        case 7: //LowerBet
+                            itemDes.itemTitle = "Resitor";
+                            itemDes.itemDescription = "Remove 1 from the current bet value. (Can be stacked)";
+                            break;
+                        case 8: //CoolGuy
+                            itemDes.itemTitle = "Really good friend";
+                            itemDes.itemDescription = "\"He's a really cool guy, he's my bestest of friends, he gave us all these cool cards.\" Give everyone 1 Trump card.";
+                            break;
                     }
                     itemDes.trumpCardType = tempCards[i].image;
 

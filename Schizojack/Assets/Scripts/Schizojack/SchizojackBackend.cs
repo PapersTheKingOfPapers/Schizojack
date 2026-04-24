@@ -43,7 +43,8 @@ public class SchizojackBackend : MonoBehaviour
     List<Card> _specialCards = new List<Card>
     {
         new Card("S", 0), new Card("S", 1), new Card("S", 2), new Card("S", 3),
-        new Card("S", 4), new Card("S", 5)
+        new Card("S", 4), new Card("S", 5), new Card("S", 6), new Card("S", 7),
+        new Card("S", 8)
     };
 
     List<Card> _actualDeck = new List<Card>();
@@ -306,10 +307,15 @@ public class SchizojackBackend : MonoBehaviour
                 {
                     if (!actor.actorWon)
                     {
+                        int healthAfterDamage = actor.actorDamaged + damageThisRound;
+
                         actor.actorLost = true;
                         if (_cantDieThisRound == false)
                         {
-                            actor.AddDamage(damageThisRound);
+                            if(healthAfterDamage >= 0)
+                            {
+                                actor.AddDamage(damageThisRound);
+                            }
                             if (actor.actorDamaged >= 10)
                             {
                                 actor.actorDead = true;
@@ -317,14 +323,16 @@ public class SchizojackBackend : MonoBehaviour
                         }
                         else
                         {
-                            int healthAfterDamage = actor.actorDamaged + damageThisRound;
                             if (healthAfterDamage >= 10)
                             {
                                 actor.SetDamaged(9);
                             }
                             else
                             {
-                                actor.AddDamage(damageThisRound);
+                                if (healthAfterDamage >= 0)
+                                {
+                                    actor.AddDamage(damageThisRound);
+                                }
                             }
                         }
                     }
@@ -404,6 +412,7 @@ public class SchizojackBackend : MonoBehaviour
 
         ChangeBlackjackTarget(21); 
         standsInARow = 0;
+        damageThisRoundAddition = 0;
         _actorActedThisTurn = false;
         _actorTurnFinalizer = false;
         _roundFinishState = false;
@@ -452,6 +461,7 @@ public class SchizojackBackend : MonoBehaviour
                     break;
                 case 3: //RoundReset
                     RoundDeckReset();
+                    ChangeBlackjackTarget(21);
                     TrumpCardReturnText($"Actor{trumpActorIndex} has restart the current round!");
                     _currentTurn = 0;
                     break;
@@ -463,6 +473,26 @@ public class SchizojackBackend : MonoBehaviour
                     break;
                 case 5: //Survivor
                     _cantDieThisRound = true;
+                    break;
+                case 6: //AddBet
+                    damageThisRoundAddition++;
+                    break;
+                case 7: //LowerBet
+                    damageThisRoundAddition--;
+                    break;
+                case 8: //CoolGuy
+                    if (IsHost())
+                    {
+                        for (int i = 0; i < _actors.Count; i++)
+                        {
+                            if (!_actors[i].actorDead)
+                            {
+                                Card trump1 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
+
+                                _networkBackEnd.GiveTrumpCardRpc(i, trump1.image);
+                            }
+                        }
+                    }
                     break;
             }
             standsInARow = 0;
@@ -801,6 +831,15 @@ public class Card
                     break;
                 case 5: // Survivor
                     path += "Survivor";
+                    break;
+                case 6: //AddBet
+                    path += "AddBet";
+                    break;
+                case 7: //LowerBet
+                    path += "LowerBet";
+                    break;
+                case 8: //CoolGuy
+                    path += "CoolGuy";
                     break;
             }
             return path;
