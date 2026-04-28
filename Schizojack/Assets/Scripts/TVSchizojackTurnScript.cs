@@ -17,10 +17,15 @@ public class TVSchizojackTurnScript : MonoBehaviour
 
     public void ToggleActiveScreens()
     {
-        /*for(int i = 0; i < SB._actors.Count; i++)
+        foreach (GameObject go in tvScreens)
+        {
+            go.SetActive(false);
+        }
+
+        for(int i = 0; i < SB._actors.Count; i++)
         {
             tvScreens[i].SetActive(true);
-        }*/
+        }
         _active = true;
     }
 
