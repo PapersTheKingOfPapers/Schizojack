@@ -2005,7 +2005,7 @@ Light:
   serializedVersion: 13
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.1
   m_Range: 2
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -5201,7 +5201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1420953578224477795, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: field of view
-      value: 60
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -1420953578224477795, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: m_FocalLength
@@ -5213,7 +5213,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1420953578224477795, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: near clip plane
-      value: 0.3
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -1420953578224477795, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: orthographic size
@@ -5517,6 +5517,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 635547659545568360, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3185130938986940289}
+    - targetCorrespondingSourceObject: {fileID: -1243785399770949675, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 892293549087268927}
     - targetCorrespondingSourceObject: {fileID: -1042006086918294150, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1109969119468647980}
@@ -5526,6 +5529,24 @@ Camera:
   m_CorrespondingSourceObject: {fileID: -1420953578224477795, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
   m_PrefabInstance: {fileID: 7888622300683938362}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &272234590841109999 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1243785399770949675, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+  m_PrefabInstance: {fileID: 7888622300683938362}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &892293549087268927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272234590841109999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f117f2f9b96d58c439dc5f2e98b55ef1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisableIfNotOwner
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!4 &814248592753535555 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7365301737488515193, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
