@@ -13,8 +13,6 @@ public class SchizojackActor : MonoBehaviour
 {
     public Animator animator;
 
-    public Transform cardTableParentObject;
-
     public Transform cardParentObject;
 
     public GameObject cardPrefab;
@@ -24,7 +22,6 @@ public class SchizojackActor : MonoBehaviour
     public TMP_Text monitorText;
 
     public List<Card> tempCards;
-    public List<Card> tempSpecialCards;
 
     [HideInInspector] public SchizojackBackend _SB;
 
@@ -75,53 +72,12 @@ public class SchizojackActor : MonoBehaviour
             }
         }
 
-        if (cardTableParentObject.childCount != 0)
-        {
-            foreach (Transform child in cardTableParentObject)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-
         if (tempCards.Count > 0)
         {
             string tempText = "TempCards : ";
             for (int i = 0; i < tempCards.Count; i++)
             {
                 float deckCount = tempCards.Count;
-
-                Vector3 tempPos = new Vector3((i - (deckCount - 1) / 2f) * 0.075f, 0, 0);
-                //Vector3 tempRotation = new Vector3(90, 0, (i - (deckCount - 1) / 2f) * 5f);
-                GameObject temp = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity, cardTableParentObject.transform);
-                //temp.transform.localPosition = new Vector3(0, 0, 0);
-                //temp.transform.localEulerAngles = tempRotation;
-                //temp.transform.Rotate(temp.transform.up, -2f);
-                temp.GetComponent<RectTransform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
-
-                string path = tempCards[i].cardTexturePath();
-                if (tempCards[i].suit != "S" && gameObject.CompareTag($"Actor{_SB._localUserNumber}"))
-                {
-                    ItemDescription itemDes = temp.AddComponent<ItemDescription>();
-                    itemDes.itemTitle = $"{tempCards[i].value}";
-                    itemDes.itemDescription = $"{tempCards[i].cardFancyName()}";
-                    itemDes.trumpCardType = -1;
-                }
-
-                temp.GetComponent<Renderer>().materials[1].enableInstancing = true;
-                temp.GetComponent<Renderer>().materials[1].mainTexture = Resources.Load<Texture>(path);
-                temp.name = $"{tempCards[i].value}{tempCards[i].suit}{tempCards[i].image}";
-                tempText += $"{temp.name},";
-                Debug.Log(path);
-            }
-            Debug.Log(tempText); 
-        }
-
-        if (tempSpecialCards.Count > 0)
-        {
-            string tempSpecialText = "TempSpecialCards : ";
-            for (int i = 0; i < tempSpecialCards.Count; i++)
-            {
-                float deckCount = tempSpecialCards.Count;
 
                 Vector3 tempRotation = new Vector3(90, 0, (i - (deckCount - 1) / 2f) * 5f);
                 GameObject temp = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity, cardParentObject.transform);
@@ -130,11 +86,11 @@ public class SchizojackActor : MonoBehaviour
                 temp.transform.Rotate(temp.transform.up, -2f);
                 //temp.GetComponent<RectTransform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
 
-                string path = tempSpecialCards[i].cardTexturePath();
-                if (tempSpecialCards[i].suit == "S" && gameObject.CompareTag($"Actor{_SB._localUserNumber}"))
+                string path = tempCards[i].cardTexturePath();
+                if (tempCards[i].suit == "S" && gameObject.CompareTag($"Actor{_SB._localUserNumber}"))
                 {
                     ItemDescription itemDes = temp.AddComponent<ItemDescription>();
-                    switch (tempSpecialCards[i].image)
+                    switch (tempCards[i].image)
                     {
                         case 0: //Reset21
                             itemDes.itemTitle = "Reset 21";
@@ -173,18 +129,17 @@ public class SchizojackActor : MonoBehaviour
                             itemDes.itemDescription = "\"He's a really cool guy, he's my bestest of friends, he gave us all these cool cards.\" Give everyone 1 Trump card.";
                             break;
                     }
-                    itemDes.trumpCardType = tempSpecialCards[i].image;
+                    itemDes.trumpCardType = tempCards[i].image;
 
                 }
 
                 temp.GetComponent<Renderer>().materials[1].enableInstancing = true;
                 temp.GetComponent<Renderer>().materials[1].mainTexture = Resources.Load<Texture>(path);
-                temp.name = $"{tempSpecialCards[i].value}{tempSpecialCards[i].suit}{tempSpecialCards[i].image}";
-                temp.layer = LayerMask.NameToLayer("SpecialCardLayer");
-                tempSpecialText += $"{temp.name},";
+                temp.name = $"{tempCards[i].value}{tempCards[i].suit}{tempCards[i].image}";
+                tempText += $"{temp.name},";
                 Debug.Log(path);
             }
-            Debug.Log(tempSpecialText);
+            Debug.Log(tempText); 
         }
     }
 }

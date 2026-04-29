@@ -361,7 +361,6 @@ Transform:
   - {fileID: 4174734177376161717}
   - {fileID: 5372056952225172407}
   - {fileID: 1194872080462050129}
-  - {fileID: 6076495481724926220}
   m_Father: {fileID: 6054836916027499168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1585160671972035323
@@ -1529,7 +1528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 633961716
+  GlobalObjectIdHash: 3890084944
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 7
@@ -3818,37 +3817,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3494350961449259182}
   m_LocalEulerAnglesHint: {x: -43.274, y: 7.47, z: -3.825}
---- !u!1 &7740162707766277744
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6076495481724926220}
-  m_Layer: 6
-  m_Name: TableCardSpot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6076495481724926220
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7740162707766277744}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.70710677, y: 0.000000029053513, z: -0.7071068, w: -0.00000011846047}
-  m_LocalPosition: {x: -0.205, y: 0, z: -0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5413380135785904305}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: -180}
 --- !u!1 &7944959362211792718
 GameObject:
   m_ObjectHideFlags: 0
@@ -5391,10 +5359,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -179.99998
       objectReference: {fileID: 0}
-    - target: {fileID: 5071327232483661835, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
-      propertyPath: m_UpdateWhenOffscreen
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5137290580350676211, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -15.586871
@@ -5642,7 +5606,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SchizojackActor
   animator: {fileID: 4328119247499499435}
-  cardTableParentObject: {fileID: 6076495481724926220}
   cardParentObject: {fileID: 1999903969550598023}
   cardPrefab: {fileID: 6920007508739538071, guid: f66761dad4364804183e9d6106651b47, type: 3}
   animatedCard: {fileID: 8270204956021156569}
