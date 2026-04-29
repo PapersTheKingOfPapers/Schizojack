@@ -652,7 +652,7 @@ public class SchizojackBackend : MonoBehaviour
                 {
                     _networkBackEnd.ActorHitRequestRpc(_localUserNumber);
                 }
-                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("CardLayer") && hit.transform.TryGetComponent(out ItemDescription itemDescription))
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("SpecialCardLayer") && hit.transform.TryGetComponent(out ItemDescription itemDescription))
                 {
                     _networkBackEnd.ActorTrumpCardUseRequestRpc(_localUserNumber,itemDescription.trumpCardType,0);
                 }

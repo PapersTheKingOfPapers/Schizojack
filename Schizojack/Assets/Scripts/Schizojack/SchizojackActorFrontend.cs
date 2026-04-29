@@ -39,7 +39,7 @@ public class SchizojackActorFrontend : MonoBehaviour
         for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].tempCards = new List<Card>(backEndActors[i].actorDeck);
-            Actors[i].tempCards.AddRange(backEndActors[i].actorSpecialDeck);
+            Actors[i].tempSpecialCards = new List<Card>(backEndActors[i].actorSpecialDeck);
             Actors[i].UpdateCards();
         }
     }
@@ -48,7 +48,7 @@ public class SchizojackActorFrontend : MonoBehaviour
         for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].tempCards = new List<Card>(backEndActors[i].actorDeck);
-            Actors[i].tempCards.AddRange(backEndActors[i].actorSpecialDeck);
+            Actors[i].tempSpecialCards = new List<Card>(backEndActors[i].actorSpecialDeck);
         }
     }
 }
