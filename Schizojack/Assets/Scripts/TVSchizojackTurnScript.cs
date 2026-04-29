@@ -19,12 +19,12 @@ public class TVSchizojackTurnScript : MonoBehaviour
     {
         foreach (GameObject go in tvScreens)
         {
-            go.SetActive(false);
+            go.transform.parent.gameObject.SetActive(false);
         }
 
         for(int i = 0; i < SB._actors.Count; i++)
         {
-            tvScreens[i].SetActive(true);
+            tvScreens[i].transform.parent.gameObject.SetActive(true);
         }
         _active = true;
     }

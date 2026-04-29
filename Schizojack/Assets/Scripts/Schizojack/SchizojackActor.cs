@@ -91,12 +91,13 @@ public class SchizojackActor : MonoBehaviour
                 float deckCount = tempCards.Count;
 
                 Vector3 tempPos = new Vector3((i - (deckCount - 1) / 2f) * 0.075f, 0, 0);
-                //Vector3 tempRotation = new Vector3(90, 0, (i - (deckCount - 1) / 2f) * 5f);
                 GameObject temp = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity, cardTableParentObject.transform);
-                //temp.transform.localPosition = new Vector3(0, 0, 0);
-                //temp.transform.localEulerAngles = tempRotation;
-                //temp.transform.Rotate(temp.transform.up, -2f);
-                temp.GetComponent<RectTransform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
+                temp.GetComponent<Transform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
+                temp.transform.localEulerAngles = new Vector3(0, 0, 0);
+                if (i == 0)
+                {
+                    temp.transform.localEulerAngles = new Vector3(0,180,0);
+                }
 
                 string path = tempCards[i].cardTexturePath();
                 if (tempCards[i].suit != "S" && gameObject.CompareTag($"Actor{_SB._localUserNumber}"))
@@ -123,11 +124,11 @@ public class SchizojackActor : MonoBehaviour
             {
                 float deckCount = tempSpecialCards.Count;
 
-                Vector3 tempRotation = new Vector3(90, 0, (i - (deckCount - 1) / 2f) * 5f);
+                Vector3 tempRotation = new Vector3(90, 0, (i - (deckCount - 1) / 2f) * 10f);
                 GameObject temp = Instantiate(cardPrefab, new Vector3(0, 0, 0), Quaternion.identity, cardParentObject.transform);
                 temp.transform.localPosition = new Vector3(0, 0, 0);
                 temp.transform.localEulerAngles = tempRotation;
-                temp.transform.Rotate(temp.transform.up, -2f);
+                temp.transform.Rotate(temp.transform.up, -2f, Space.Self);
                 //temp.GetComponent<RectTransform>().SetLocalPositionAndRotation(tempPos, Quaternion.identity);
 
                 string path = tempSpecialCards[i].cardTexturePath();
