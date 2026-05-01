@@ -21,10 +21,14 @@ public class CameraTurn : NetworkBehaviour
     private Vector3 _currentRotation;
     private Vector3 _currentVelocity;
 
-    public override void OnGainedOwnership()
+    protected override void OnOwnershipChanged(ulong previous, ulong current)
     {
-        DisableCameraTurn();
-        base.OnGainedOwnership();
+        if (IsOwner)
+        {
+            _look.Disable();
+            _zoom.Disable();
+        }
+        base.OnOwnershipChanged(previous, current);
     }
 
     public void DisableCameraTurn()
