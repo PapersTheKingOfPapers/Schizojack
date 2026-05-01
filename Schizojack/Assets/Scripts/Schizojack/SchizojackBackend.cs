@@ -111,6 +111,8 @@ public class SchizojackBackend : MonoBehaviour
     [HideInInspector] public int trumpTargetIndex;
     [HideInInspector] public string trumpText;
 
+    private bool _autoStartedGame = false;
+
     private void Awake()
     {
         layerMask = LayerMask.GetMask("Default");
@@ -179,6 +181,13 @@ public class SchizojackBackend : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //runs once in the beginning
+        if(_autoStartedGame == false && IsHost() && _frontEnd.Actors.Count == NetworkManager.Singleton.ConnectedClientsList.Count)
+        {
+            _networkBackEnd.StartSessionRpc();
+            _autoStartedGame = true;
+        }
+
         damageThisRound = baseDamageThisRound + damageThisRoundAddition;
 
         if(sessionStarted == true && _roundFinishState == false && sessionFinished == false)

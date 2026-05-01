@@ -11,16 +11,16 @@ public class SchizojackNetworkBackend : NetworkBehaviour
 
     [HideInInspector] public int _localUserNumber = 0;
 
-    public GameObject startGameButton;
+    //public GameObject startGameButton;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _backEnd = this.GetComponent<SchizojackBackend>();
-        if (!IsHost)
+        /*if (!IsHost)
         {
-            startGameButton.SetActive(false);
-        }
+            //startGameButton.SetActive(false);
+        }*/
     }
 
     [Rpc(SendTo.Everyone)]
@@ -58,7 +58,7 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     public void StartSessionRpc()
     {
         _backEnd.InitializeActors();
-        startGameButton.SetActive(false);
+        //startGameButton.SetActive(false);
         Debug.Log("Started Session");
     }
     [Rpc(SendTo.Everyone)]
