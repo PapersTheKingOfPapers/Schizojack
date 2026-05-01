@@ -188,6 +188,17 @@ public class SchizojackBackend : MonoBehaviour
             _autoStartedGame = true;
         }
 
+        if (_autoStartedGame == true)
+        {
+            for (int i = 0; i < _actors.Count; i++)
+            {
+                if (_actors[i].actorDead == true)
+                {
+                    _frontEnd.Actors[i]._CT.DisableCameraTurn();
+                }
+            }
+        }
+
         damageThisRound = baseDamageThisRound + damageThisRoundAddition;
 
         if(sessionStarted == true && _roundFinishState == false && sessionFinished == false)
@@ -203,6 +214,7 @@ public class SchizojackBackend : MonoBehaviour
 
             while (_actors[_currentTurn].actorDead) {
                 _currentTurn++;
+                standsInARow++;
                 FixCurrentTurnCycle();
             }
              

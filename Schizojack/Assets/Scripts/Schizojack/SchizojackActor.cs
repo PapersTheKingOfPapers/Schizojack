@@ -27,8 +27,14 @@ public class SchizojackActor : MonoBehaviour
     public List<Card> tempSpecialCards;
 
     [HideInInspector] public SchizojackBackend _SB;
+    [HideInInspector] public CameraTurn _CT;
 
     public bool finishedAnimation;
+
+    public void Start()
+    {
+        _CT = GetComponentInChildren<CameraTurn>();
+    }
 
     public void FinishedAnimation()
     {

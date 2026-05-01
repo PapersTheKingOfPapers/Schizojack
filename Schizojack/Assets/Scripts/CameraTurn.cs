@@ -21,10 +21,12 @@ public class CameraTurn : NetworkBehaviour
     private Vector3 _currentRotation;
     private Vector3 _currentVelocity;
 
-    public override void OnNetworkDespawn()
+    public void DisableCameraTurn()
     {
         if (_look != null)
             _look.Disable();
+        if (_zoom != null)
+            _zoom.Disable();
     }
     public override void OnNetworkSpawn()
     {
