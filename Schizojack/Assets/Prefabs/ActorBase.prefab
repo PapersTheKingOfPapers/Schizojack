@@ -1326,10 +1326,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 633961716
+  GlobalObjectIdHash: 3890084944
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
-  Ownership: 7
+  Ownership: 5
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 1
@@ -4491,6 +4491,7 @@ MonoBehaviour:
   animatedCard: {fileID: 8270204956021156569}
   monitorText: {fileID: 1634680929454402111}
   _SB: {fileID: 0}
+  _CT: {fileID: 0}
   finishedAnimation: 0
 --- !u!114 &4959066175787003507
 MonoBehaviour:
