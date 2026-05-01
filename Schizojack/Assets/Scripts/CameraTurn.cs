@@ -29,8 +29,6 @@ public class CameraTurn : NetworkBehaviour
         if (IsOwner && previous != current)
         {
             _inputsEnabled = false;
-            _look.Disable();
-            _zoom.Disable();
         }
         base.OnOwnershipChanged(previous, current);
     }
@@ -38,8 +36,6 @@ public class CameraTurn : NetworkBehaviour
     public void DisableCameraTurn()
     {
         _inputsEnabled = false;
-        _look.Disable();
-        _zoom.Disable();
     }
     public override void OnNetworkSpawn()
     {
