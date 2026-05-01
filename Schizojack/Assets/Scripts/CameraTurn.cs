@@ -29,10 +29,8 @@ public class CameraTurn : NetworkBehaviour
 
     public void DisableCameraTurn()
     {
-        if (_look != null)
-            _look.Disable();
-        if (_zoom != null)
-            _zoom.Disable();
+        _look.Disable();
+        _zoom.Disable();
     }
     public override void OnNetworkSpawn()
     {
@@ -68,8 +66,14 @@ public class CameraTurn : NetworkBehaviour
         //If not, it returns
         if (!IsOwner) return;
 
-        look = _look.ReadValue<Vector2>();
-
+        if (!_look.enabled)
+        {
+            look = new Vector2(0.5f, 0.5f);
+        }
+        else
+        {
+            look = _look.ReadValue<Vector2>();
+        }
         //Sets the Target Rotation
         Vector3 targetRotation = _baseRotation + new Vector3
             (((look.y - (Screen.height/2)) / Screen.height) * -_turnForce,
@@ -87,6 +91,9 @@ public class CameraTurn : NetworkBehaviour
         _Head.rotation = Quaternion.Euler(_currentRotation);
 
         //Zoom the camera
-        _Camera.fieldOfView = _zoom.IsPressed() ? _zoomedFov : _defaultFov;
+        if (_zoom.enabled)
+        {
+            _Camera.fieldOfView = _zoom.IsPressed() ? _zoomedFov : _defaultFov;
+        }
     }
 }
