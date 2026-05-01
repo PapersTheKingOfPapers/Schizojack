@@ -13,6 +13,9 @@ public class CameraTurn : NetworkBehaviour
     [SerializeField] private int _defaultFov = 80;
     [SerializeField] private int _zoomedFov = 50;
     [SerializeField] private InputActionAsset Assets;
+
+    private bool _inputsEnabled = true;
+
     private InputAction _look;
     private InputAction _zoom;
 
@@ -23,8 +26,9 @@ public class CameraTurn : NetworkBehaviour
 
     protected override void OnOwnershipChanged(ulong previous, ulong current)
     {
-        if (IsOwner)
+        if (IsOwner && previous != current)
         {
+            _inputsEnabled = false;
             _look.Disable();
             _zoom.Disable();
         }
@@ -33,6 +37,7 @@ public class CameraTurn : NetworkBehaviour
 
     public void DisableCameraTurn()
     {
+        _inputsEnabled = false;
         _look.Disable();
         _zoom.Disable();
     }
@@ -70,13 +75,13 @@ public class CameraTurn : NetworkBehaviour
         //If not, it returns
         if (!IsOwner) return;
 
-        if (!_look.enabled)
+        if (_inputsEnabled)
         {
-            look = new Vector2(0.5f, 0.5f);
+            look = _look.ReadValue<Vector2>();
         }
         else
         {
-            look = _look.ReadValue<Vector2>();
+            look = new Vector2(0, 0);
         }
         //Sets the Target Rotation
         Vector3 targetRotation = _baseRotation + new Vector3
@@ -95,7 +100,7 @@ public class CameraTurn : NetworkBehaviour
         _Head.rotation = Quaternion.Euler(_currentRotation);
 
         //Zoom the camera
-        if (_zoom.enabled)
+        if (_inputsEnabled)
         {
             _Camera.fieldOfView = _zoom.IsPressed() ? _zoomedFov : _defaultFov;
         }
