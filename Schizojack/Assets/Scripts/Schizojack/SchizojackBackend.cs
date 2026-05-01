@@ -158,7 +158,7 @@ public class SchizojackBackend : MonoBehaviour
     {
         foreach (var actor in _frontEnd.Actors)
         {
-            _actors.Add(new Actor());
+            _actors.Add(new Actor(actor.GetComponent<NetworkObject>().OwnerClientId));
             actor._SB = this;
         }
         
@@ -957,6 +957,19 @@ public class Actor
     public bool actorWon { get; set; }
     public bool actorDead { get; set; }
     public List<int> deckValues { get; set; }
+    public ulong clientId { get; set; }
+    public Actor(ulong clientId)
+    {
+        this.actorDeck = new List<Card>();
+        this.actorSpecialDeck = new List<Card>();
+        this.actorDamaged = 0;
+        this.actorLost = false;
+        this.actorWon = false;
+        this.actorDead = false;
+        this.deckValues = new List<int>();
+        this.clientId = clientId;
+    }
+
     public Actor()
     {
         this.actorDeck = new List<Card>();

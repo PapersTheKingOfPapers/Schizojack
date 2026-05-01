@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using static SchizojackBackend;
 
@@ -21,6 +22,24 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         {
             //startGameButton.SetActive(false);
         }*/
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += KillClientFunction;
+    }
+
+    public void KillClientFunction(ulong clientId)
+    {
+        foreach(Actor actor in _backEnd._actors)
+        {
+            if(actor.clientId == clientId)
+            {
+                actor.actorDead = true;
+            }
+        }
     }
 
     [Rpc(SendTo.Everyone)]
