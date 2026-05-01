@@ -158,7 +158,7 @@ public class SchizojackBackend : MonoBehaviour
     {
         foreach (var actor in _frontEnd.Actors)
         {
-            _actors.Add(new Actor(actor.GetComponent<NetworkObject>().OwnerClientId));
+            _actors.Add(new Actor(actor.GetComponentInParent<NetworkObject>().OwnerClientId));
             actor._SB = this;
         }
         

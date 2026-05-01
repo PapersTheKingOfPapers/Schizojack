@@ -23,14 +23,12 @@ public class SchizojackNetworkBackend : NetworkBehaviour
             //startGameButton.SetActive(false);
         }*/
     }
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         NetworkManager.Singleton.OnClientDisconnectCallback += KillClientFunction;
     }
-
     public void KillClientFunction(ulong clientId)
     {
         foreach(Actor actor in _backEnd._actors)
