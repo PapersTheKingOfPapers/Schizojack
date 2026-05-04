@@ -1,5 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StatsMonitor : MonoBehaviour
@@ -52,6 +54,11 @@ public class StatsMonitor : MonoBehaviour
     public void confirmQuit() //Suicide
     {
         //Suicide code here When pressed player dies.
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void UpdateUI()
