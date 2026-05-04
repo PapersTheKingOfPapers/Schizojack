@@ -43,18 +43,23 @@ public class SchizojackActor : MonoBehaviour
 
     public void StartBackupCoroutine()
     {
-        StartCoroutine(BackupAnimationFinish());
+        StartCoroutine(BackupAnimationFinish(5));
+    }
+
+    public void StartBackupDamageCoroutine()
+    {
+        StartCoroutine(BackupAnimationFinish(10));
     }
 
     public void StopBackupCoroutine()
     {
-        StopCoroutine(BackupAnimationFinish());
+        StopCoroutine(BackupAnimationFinish(5));
         StopAllCoroutines();
     }
 
-    public IEnumerator BackupAnimationFinish()
+    public IEnumerator BackupAnimationFinish(int time)
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(time);
         FinishedAnimation();
     }
 
