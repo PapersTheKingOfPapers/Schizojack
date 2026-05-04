@@ -36,8 +36,14 @@ public class SchizojackNetworkBackend : NetworkBehaviour
             if(actor.clientId == clientId)
             {
                 actor.actorDead = true;
+                KillActorAnimationRpc(_backEnd._actors.IndexOf(actor));
             }
         }
+    }
+    [Rpc(SendTo.Everyone)]
+    public void KillActorAnimationRpc(int actorIndex)
+    {
+        _backEnd.KillActorAnimation(actorIndex);
     }
 
     [Rpc(SendTo.Everyone)]
@@ -70,7 +76,6 @@ public class SchizojackNetworkBackend : NetworkBehaviour
     {
         _backEnd.ActorStand(actorIndex);
     }
-
     [Rpc(SendTo.Everyone)]
     public void StartSessionRpc()
     {
@@ -91,7 +96,6 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         _backEnd.baseDamageThisRound++;
         Debug.Log("Starting New Round");
     }
-
     [Rpc(SendTo.Everyone)]
     public void SessionOverRpc(int winnerIndex)
     {

@@ -34,6 +34,16 @@ public class SchizojackActorFrontend : MonoBehaviour
         Actors[actorIndex].StartBackupCoroutine();
     }
 
+    public void ActorTakeDamage(int actorIndex)
+    {
+        Actors[actorIndex].animator.SetTrigger("TakeDamage");
+    }
+
+    public void ActorDieAnimation(int actorIndex)
+    {
+        Actors[actorIndex].animator.SetBool("ActorDead", true);
+    }
+
     public void UpdateActorHands(List<Actor> backEndActors)
     {
         for (int i = 0; i < Actors.Count; i++)

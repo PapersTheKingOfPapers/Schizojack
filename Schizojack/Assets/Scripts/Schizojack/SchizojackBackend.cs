@@ -764,6 +764,11 @@ public class SchizojackBackend : MonoBehaviour
         standsInARow = 0;
     }
 
+    public void KillActorAnimation(int actorIndex)
+    {
+        _frontEnd.ActorDieAnimation(actorIndex);
+    }
+
     // UI Functions
     public void PlayerHitUI()
     {
