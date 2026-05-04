@@ -3,7 +3,22 @@ guid: 26aadee97a4cefc418ef7f32e7a0f3ed
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ActorBase
+    second: {fileID: 2100000, guid: 683d9855c667c2f40a9e050773d02902, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ActorSkin
+    second: {fileID: 2100000, guid: cb7508e8f7f9881479920a6c6db488af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MaskAndGoggles
+    second: {fileID: 2100000, guid: e6dcb4fcf4c2d5a47a66a0374680b19b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
