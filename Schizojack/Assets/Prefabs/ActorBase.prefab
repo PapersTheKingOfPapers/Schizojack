@@ -433,7 +433,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6262199264204284697}
         m_TargetAssemblyTypeName: StatsMonitor, Assembly-CSharp
         m_MethodName: confirmQuit
         m_Mode: 1
@@ -1504,7 +1504,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6262199264204284697}
         m_TargetAssemblyTypeName: StatsMonitor, Assembly-CSharp
         m_MethodName: options
         m_Mode: 1
@@ -2146,7 +2146,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6262199264204284697}
         m_TargetAssemblyTypeName: StatsMonitor, Assembly-CSharp
         m_MethodName: stats
         m_Mode: 1
@@ -5571,7 +5571,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6262199264204284697}
         m_TargetAssemblyTypeName: StatsMonitor, Assembly-CSharp
         m_MethodName: quit
         m_Mode: 1
@@ -5704,7 +5704,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6262199264204284697}
         m_TargetAssemblyTypeName: StatsMonitor, Assembly-CSharp
         m_MethodName: back
         m_Mode: 1
