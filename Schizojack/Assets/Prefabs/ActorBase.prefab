@@ -1528,6 +1528,7 @@ GameObject:
   - component: {fileID: 3087134078891361883}
   - component: {fileID: 3662252475067715109}
   - component: {fileID: 7589870431738429918}
+  - component: {fileID: 8632192627508328066}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -1619,6 +1620,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8632192627508328066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4155620723317555901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f117f2f9b96d58c439dc5f2e98b55ef1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisableIfNotOwner
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &4173372173006424419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1994,7 +2008,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3890084944
+  GlobalObjectIdHash: 633961716
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 7
