@@ -214,6 +214,8 @@ public class SchizojackBackend : MonoBehaviour
 
             while (_actors[_currentTurn].actorDead) {
                 _currentTurn++;
+                _actorActedThisTurn = false;
+                _actorTurnFinalizer = false;
                 standsInARow++;
                 FixCurrentTurnCycle();
             }

@@ -36,12 +36,12 @@ public class SchizojackActorFrontend : MonoBehaviour
 
     public void ActorTakeDamage(int actorIndex)
     {
-        Actors[actorIndex].animator.SetTrigger("TakeDamage");
+        //Actors[actorIndex].animator.SetTrigger("TakeDamage");
     }
 
     public void ActorDieAnimation(int actorIndex)
     {
-        Actors[actorIndex].animator.SetBool("ActorDead", true);
+        //Actors[actorIndex].animator.SetBool("ActorDead", true);
     }
 
     public void UpdateActorHands(List<Actor> backEndActors)
