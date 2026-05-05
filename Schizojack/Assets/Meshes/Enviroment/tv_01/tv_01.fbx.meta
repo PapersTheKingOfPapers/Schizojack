@@ -14,6 +14,21 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Screen
     second: {fileID: 2100000, guid: 289bc11698ea43e4abb747fbeba5971c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TVhandle
+    second: {fileID: 2100000, guid: f06b55b904ff41945bdd43c4e15e5f74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TvBody
+    second: {fileID: 2100000, guid: 72a979278d724004abc121c497f5c64c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TvScreen
+    second: {fileID: 2100000, guid: 289bc11698ea43e4abb747fbeba5971c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ae0b41c0a3c99a44491cd354f7a06fae
+guid: 620c0b7b68380ab42b7a279eedc5c2be
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,25 +7,10 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Body
-    second: {fileID: 2100000, guid: 72a979278d724004abc121c497f5c64c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: TVhandle
-    second: {fileID: 2100000, guid: f06b55b904ff41945bdd43c4e15e5f74, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: TvBody
-    second: {fileID: 2100000, guid: 72a979278d724004abc121c497f5c64c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: TvScreen
-    second: {fileID: 2100000, guid: 289bc11698ea43e4abb747fbeba5971c, type: 2}
+      name: No Name
+    second: {fileID: 2100000, guid: b0ca20c03a443814fa3b44f684d73818, type: 2}
   materials:
-    materialImportMode: 2
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -88,7 +73,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
