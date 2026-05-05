@@ -1,19 +1,9 @@
 fileFormatVersion: 2
-guid: ae0b41c0a3c99a44491cd354f7a06fae
+guid: 05659a3d6efbc0746bb2ef2d236b2a07
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Body
-    second: {fileID: 2100000, guid: 72a979278d724004abc121c497f5c64c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: TVhandle
-    second: {fileID: 2100000, guid: f06b55b904ff41945bdd43c4e15e5f74, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
