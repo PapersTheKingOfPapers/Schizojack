@@ -76,6 +76,17 @@ public class SchizojackActor : MonoBehaviour
         animatedCard.GetComponent<Renderer>().materials[0].mainTexture = Resources.Load<Texture>(path);
     }
 
+    public void DeleteHandCards()
+    {
+        if (cardParentObject.childCount != 0)
+        {
+            foreach (Transform child in cardParentObject)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+    }
+
     public void UpdateCards()
     {
         if (cardParentObject.childCount != 0)

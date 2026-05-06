@@ -335,13 +335,19 @@ public class SchizojackBackend : MonoBehaviour
                         actor.actorLost = true;
                         if (_cantDieThisRound == false)
                         {
-                            if(healthAfterDamage >= 0)
+                            if(healthAfterDamage >= 0 && healthAfterDamage < 10)
                             {
                                 actor.AddDamage(damageThisRound);
+
+                                _frontEnd.ActorTakeDamage(_actors.IndexOf(actor));
                             }
-                            if (actor.actorDamaged >= 10)
+                            if (healthAfterDamage >= 10)
                             {
+                                actor.AddDamage(damageThisRound);
+
                                 actor.actorDead = true;
+
+                                _frontEnd.ActorDieAnimation(_actors.IndexOf(actor));
                             }
                         }
                         else
@@ -349,13 +355,14 @@ public class SchizojackBackend : MonoBehaviour
                             if (healthAfterDamage >= 10)
                             {
                                 actor.SetDamaged(9);
+
+                                _frontEnd.ActorTakeDamage(_actors.IndexOf(actor));
                             }
-                            else
+                            else if(healthAfterDamage >= 0)
                             {
-                                if (healthAfterDamage >= 0)
-                                {
-                                    actor.AddDamage(damageThisRound);
-                                }
+                                actor.AddDamage(damageThisRound);
+
+                                _frontEnd.ActorTakeDamage(_actors.IndexOf(actor));
                             }
                         }
                     }
@@ -378,6 +385,7 @@ public class SchizojackBackend : MonoBehaviour
                 _networkBackEnd.SessionOverRpc(winnerIndex);
             }
 
+            // Start new round, only host calls this
             if(sessionFinished == false && IsHost())
             {
                 _networkBackEnd.StartNewRoundRpc();
@@ -425,11 +433,14 @@ public class SchizojackBackend : MonoBehaviour
         {
             for (int i = 0; i < _actors.Count; i++)
             {
-                Card trump1 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
-                Card trump2 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
+                if (!_actors[i].actorDead)
+                {
+                    Card trump1 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
+                    Card trump2 = new Card(_specialCards[UnityEngine.Random.Range(0, _specialCards.Count)]);
 
-                _networkBackEnd.GiveTrumpCardRpc(i, trump1.image);
-                _networkBackEnd.GiveTrumpCardRpc(i, trump2.image);
+                    _networkBackEnd.GiveTrumpCardRpc(i, trump1.image);
+                    _networkBackEnd.GiveTrumpCardRpc(i, trump2.image);
+                }
             }
         }
 
@@ -665,7 +676,8 @@ public class SchizojackBackend : MonoBehaviour
 
     public void NetworkActorHit() // Also used for selecting trump cards.
     {
-        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false)
+        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false && 
+            _frontEnd.Actors[_localUserNumber].animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorSitIdle1"))
         {
             RaycastHit hit;
             Ray ray = localUserCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -684,7 +696,8 @@ public class SchizojackBackend : MonoBehaviour
     }
     public void NetworkActorStand()
     {
-        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false)
+        if (_actorActedThisTurn == false && IsLocalActorTurn() && sessionStarted == true && sessionFinished == false &&
+            _frontEnd.Actors[_localUserNumber].animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorSitIdle1"))
         {
             RaycastHit hit;
             Ray ray = localUserCamera.ScreenPointToRay(Mouse.current.position.ReadValue());

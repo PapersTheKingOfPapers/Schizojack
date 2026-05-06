@@ -5940,6 +5940,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -106.431244
       objectReference: {fileID: 0}
+    - target: {fileID: -6935631693094240029, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -6873945806621305404, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       propertyPath: m_UpdateWhenOffscreen
       value: 1

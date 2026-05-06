@@ -77,7 +77,7 @@ public class CameraTurn : NetworkBehaviour
         }
         else
         {
-            look = new Vector2(0, 0);
+            look = new Vector2(Screen.width / 2, Screen.height / 2);
         }
         //Sets the Target Rotation
         Vector3 targetRotation = _baseRotation + new Vector3
