@@ -36,6 +36,20 @@ public class SchizojackActor : MonoBehaviour
         _CT = GetComponentInChildren<CameraTurn>();
     }
 
+    public void Update()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorTakeDamage") || animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorDiePart1"))
+        {
+            animator.SetLayerWeight(0, 0);
+            animator.SetLayerWeight(2, 1);
+        }
+        else
+        {
+            animator.SetLayerWeight(0, 1);
+            animator.SetLayerWeight(2, 0);
+        }
+    }
+
     public void FinishedAnimation()
     {
         finishedAnimation = true;
