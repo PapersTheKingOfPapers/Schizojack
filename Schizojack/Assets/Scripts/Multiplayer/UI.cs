@@ -16,6 +16,12 @@ public class UI : NetworkBehaviour
     [SerializeField] private List<TMP_Text> player2Name;
     [SerializeField] private List<TMP_Text> player3Name;
     [SerializeField] private List<TMP_Text> player4Name;
+
+    [SerializeField] private List<GameObject> player1UI;
+    [SerializeField] private List<GameObject> player2UI;
+    [SerializeField] private List<GameObject> player3UI;
+    [SerializeField] private List<GameObject> player4UI;
+
     [Header("Screen References")]
     [SerializeField] private GameObject MainMenu;
     [SerializeField] private GameObject PlayMenu;
@@ -37,69 +43,64 @@ public class UI : NetworkBehaviour
     private Dictionary<ulong, int> clientToSlot = new();
     private Dictionary<int, ulong> slotToClient = new();
 
-    private void OnPlayer1Changed(FixedString64Bytes oldValue,
-                                  FixedString64Bytes newValue)
+    private void OnPlayer1Changed(FixedString64Bytes oldValue, FixedString64Bytes newValue)
     {
-        foreach (TMP_Text text in player1Name)
-        {
-            text.text = newValue.ToString();
-        }
+        foreach (TMP_Text text in player1Name) text.text = newValue.ToString();
+        UpdateSlotVisibility(1, newValue.ToString());
     }
 
-    private void OnPlayer2Changed(FixedString64Bytes oldValue,
-                                  FixedString64Bytes newValue)
+    private void OnPlayer2Changed(FixedString64Bytes oldValue, FixedString64Bytes newValue)
     {
-        foreach (TMP_Text text in player2Name)
-        {
-            text.text = newValue.ToString();
-        }
+        foreach (TMP_Text text in player2Name) text.text = newValue.ToString();
+        UpdateSlotVisibility(2, newValue.ToString());
     }
 
-    private void OnPlayer3Changed(FixedString64Bytes oldValue,
-                                  FixedString64Bytes newValue)
+    private void OnPlayer3Changed(FixedString64Bytes oldValue, FixedString64Bytes newValue)
     {
-        foreach (TMP_Text text in player3Name)
-        {
-            text.text = newValue.ToString();
-        }
+        foreach (TMP_Text text in player3Name) text.text = newValue.ToString();
+        UpdateSlotVisibility(3, newValue.ToString());
     }
 
-    private void OnPlayer4Changed(FixedString64Bytes oldValue,
-                                  FixedString64Bytes newValue)
+    private void OnPlayer4Changed(FixedString64Bytes oldValue, FixedString64Bytes newValue)
     {
-        foreach (TMP_Text text in player4Name)
-        {
-            text.text = newValue.ToString();
-        }
+        foreach (TMP_Text text in player4Name) text.text = newValue.ToString();
+        UpdateSlotVisibility(4, newValue.ToString());
     }
     private void OnClientConnected(ulong clientId)
     {
-        if (clientToSlot.ContainsKey(clientId)) return;
+        if (!IsServer) return;
 
-        int slot = clientToSlot.Count + 1;
+        if (clientId == NetworkManager.ServerClientId) return;
 
-        if (slot > 4) return;
+        int assignedSlot = -1;
+        if (string.IsNullOrEmpty(player2.Value.ToString())) assignedSlot = 2;
+        else if (string.IsNullOrEmpty(player3.Value.ToString())) assignedSlot = 3;
+        else if (string.IsNullOrEmpty(player4.Value.ToString())) assignedSlot = 4;
 
-        clientToSlot[clientId] = slot;
-        slotToClient[slot] = clientId;
-
-        NotifyPlayerSlotClientRpc(slot, new ClientRpcParams
+        if (assignedSlot != -1)
         {
-            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } }
-        });
-    }
+            clientToSlot[clientId] = assignedSlot;
+            slotToClient[assignedSlot] = clientId;
 
-    [ClientRpc]
-    private void NotifyPlayerSlotClientRpc(int slot, ClientRpcParams rpcParams = default)
-    {
-        Debug.Log($"<color=green>System: Connection Successful! You are Player {slot}</color>");
+            string randomName = GetRandomName();
+            if (assignedSlot == 2) player2.Value = randomName;
+            if (assignedSlot == 3) player3.Value = randomName;
+            if (assignedSlot == 4) player4.Value = randomName;
+        }
     }
     private void OnClientDisconnected(ulong clientId)
     {
-        if (clientToSlot.TryGetValue(clientId, out int slot))
+        if (IsServer)
         {
-            clientToSlot.Remove(clientId);
-            slotToClient.Remove(slot);
+            if (clientToSlot.TryGetValue(clientId, out int slot))
+            {
+                if (slot == 2) player2.Value = "";
+                if (slot == 3) player3.Value = "";
+                if (slot == 4) player4.Value = "";
+
+                clientToSlot.Remove(clientId);
+                slotToClient.Remove(slot);
+            }
         }
 
         if (clientId == NetworkManager.Singleton.LocalClientId)
@@ -120,7 +121,14 @@ public class UI : NetworkBehaviour
 
         if (IsServer)
         {
-            AssignRandomNames();
+            player1.Value = "";
+            player2.Value = "";
+            player3.Value = "";
+            player4.Value = "";
+
+            player1.Value = GetRandomName();
+            clientToSlot[NetworkManager.ServerClientId] = 1;
+            slotToClient[1] = NetworkManager.ServerClientId;
         }
 
         RefreshUI();
@@ -167,6 +175,11 @@ public class UI : NetworkBehaviour
         "Copper",
         "Ethan",
         "Marcus",
+        "Chuck",
+        "Saul",
+        "Walter",
+        "Morgan",
+        "Arthur",
     };
     private List<string> lastNames = new List<string>()
     {
@@ -178,7 +191,13 @@ public class UI : NetworkBehaviour
         "Miller",
         "Balling",
         "Brown",
-        "THE INVINCIBLE",
+        "Walton",
+        "Cockbox",
+        "Goodman",
+        "White",
+        "Morgan",
+        "Ford",
+        "Freeman",
     };
 
     private enum menuStates
@@ -402,9 +421,42 @@ public class UI : NetworkBehaviour
     }
     private void RefreshUI()
     {
-        foreach (var t in player1Name) t.text = player1.Value.ToString();
-        foreach (var t in player2Name) t.text = player2.Value.ToString();
-        foreach (var t in player3Name) t.text = player3.Value.ToString();
-        foreach (var t in player4Name) t.text = player4.Value.ToString();
+        string p1 = player1.Value.ToString();
+        string p2 = player2.Value.ToString();
+        string p3 = player3.Value.ToString();
+        string p4 = player4.Value.ToString();
+
+        foreach (var t in player1Name) t.text = p1;
+        UpdateSlotVisibility(1, p1);
+
+        foreach (var t in player2Name) t.text = p2;
+        UpdateSlotVisibility(2, p2);
+
+        foreach (var t in player3Name) t.text = p3;
+        UpdateSlotVisibility(3, p3);
+
+        foreach (var t in player4Name) t.text = p4;
+        UpdateSlotVisibility(4, p4);
+    }
+    private void UpdateSlotVisibility(int slot, string playerName)
+    {
+        bool isActive = !string.IsNullOrEmpty(playerName);
+
+        List<GameObject> uiList = slot switch
+        {
+            1 => player1UI,
+            2 => player2UI,
+            3 => player3UI,
+            4 => player4UI,
+            _ => null
+        };
+
+        if (uiList != null)
+        {
+            foreach (GameObject go in uiList)
+            {
+                go.SetActive(isActive);
+            }
+        }
     }
 }
