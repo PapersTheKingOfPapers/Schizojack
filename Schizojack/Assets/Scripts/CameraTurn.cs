@@ -32,7 +32,6 @@ public class CameraTurn : NetworkBehaviour
         }
         base.OnOwnershipChanged(previous, current);
     }
-
     public void DisableCameraTurn()
     {
         _inputsEnabled = false;
@@ -71,19 +70,20 @@ public class CameraTurn : NetworkBehaviour
         //If not, it returns
         if (!IsOwner) return;
 
+        //Sets the Target Rotation
+        Vector3 targetRotation = _baseRotation;
+
         if (_inputsEnabled)
         {
             look = _look.ReadValue<Vector2>();
+
+            //Sets the Target Rotation
+            targetRotation = _baseRotation + new Vector3
+                (((look.y - (Screen.height / 2)) / Screen.height) * -_turnForce,
+                ((look.x - (Screen.width / 2)) / Screen.width) * _turnForce,
+                0);
         }
-        else
-        {
-            look = new Vector2(Screen.width / 2, Screen.height / 2);
-        }
-        //Sets the Target Rotation
-        Vector3 targetRotation = _baseRotation + new Vector3
-            (((look.y - (Screen.height/2)) / Screen.height) * -_turnForce,
-            ((look.x - (Screen.width / 2)) / Screen.width) * _turnForce,
-            0);
+        
 
         //Smooths the Camera Rotation
         _currentRotation = Vector3.SmoothDamp(

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static SchizojackBackend;
 
 [RequireComponent(typeof(SchizojackBackend))]
@@ -35,11 +36,26 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         {
             if(actor.clientId == clientId)
             {
+                if(_backEnd._actors.IndexOf(actor) == 0)
+                {
+                    QuitToMainMenuOnHostLeaveRpc();
+                }
+
                 actor.actorDead = true;
                 KillActorAnimationRpc(_backEnd._actors.IndexOf(actor));
             }
         }
     }
+    [Rpc(SendTo.NotOwner)]
+    public void QuitToMainMenuOnHostLeaveRpc()
+    {
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+        SceneManager.LoadScene("MainMenu");
+    }
+
     [Rpc(SendTo.Everyone)]
     public void KillActorAnimationRpc(int actorIndex)
     {
