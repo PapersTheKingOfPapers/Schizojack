@@ -7,11 +7,15 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using Unity.Collections;
 
-public class UI : MonoBehaviour
+public class UI : NetworkBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private bool IsMainMenu = true;
+    [Header("Player Name UI")]
+    [SerializeField] private List<TMP_Text> player1Name;
+    [SerializeField] private List<TMP_Text> player2Name;
+    [SerializeField] private List<TMP_Text> player3Name;
+    [SerializeField] private List<TMP_Text> player4Name;
     [Header("Screen References")]
     [SerializeField] private GameObject MainMenu;
     [SerializeField] private GameObject PlayMenu;
@@ -24,6 +28,158 @@ public class UI : MonoBehaviour
     [SerializeField] private TMP_InputField codeInput;
 
     private Coroutine loadingTimeoutCoroutine;
+
+    private NetworkVariable<FixedString64Bytes> player1 = new NetworkVariable<FixedString64Bytes>();
+    private NetworkVariable<FixedString64Bytes> player2 = new NetworkVariable<FixedString64Bytes>();
+    private NetworkVariable<FixedString64Bytes> player3 = new NetworkVariable<FixedString64Bytes>();
+    private NetworkVariable<FixedString64Bytes> player4 = new NetworkVariable<FixedString64Bytes>();
+
+    private Dictionary<ulong, int> clientToSlot = new();
+    private Dictionary<int, ulong> slotToClient = new();
+
+    private void OnPlayer1Changed(FixedString64Bytes oldValue,
+                                  FixedString64Bytes newValue)
+    {
+        foreach (TMP_Text text in player1Name)
+        {
+            text.text = newValue.ToString();
+        }
+    }
+
+    private void OnPlayer2Changed(FixedString64Bytes oldValue,
+                                  FixedString64Bytes newValue)
+    {
+        foreach (TMP_Text text in player2Name)
+        {
+            text.text = newValue.ToString();
+        }
+    }
+
+    private void OnPlayer3Changed(FixedString64Bytes oldValue,
+                                  FixedString64Bytes newValue)
+    {
+        foreach (TMP_Text text in player3Name)
+        {
+            text.text = newValue.ToString();
+        }
+    }
+
+    private void OnPlayer4Changed(FixedString64Bytes oldValue,
+                                  FixedString64Bytes newValue)
+    {
+        foreach (TMP_Text text in player4Name)
+        {
+            text.text = newValue.ToString();
+        }
+    }
+    private void OnClientConnected(ulong clientId)
+    {
+        if (clientToSlot.ContainsKey(clientId)) return;
+
+        int slot = clientToSlot.Count + 1;
+
+        if (slot > 4) return;
+
+        clientToSlot[clientId] = slot;
+        slotToClient[slot] = clientId;
+
+        NotifyPlayerSlotClientRpc(slot, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } }
+        });
+    }
+
+    [ClientRpc]
+    private void NotifyPlayerSlotClientRpc(int slot, ClientRpcParams rpcParams = default)
+    {
+        Debug.Log($"<color=green>System: Connection Successful! You are Player {slot}</color>");
+    }
+    private void OnClientDisconnected(ulong clientId)
+    {
+        if (clientToSlot.TryGetValue(clientId, out int slot))
+        {
+            clientToSlot.Remove(clientId);
+            slotToClient.Remove(slot);
+        }
+
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+    public override void OnNetworkSpawn()
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+
+        player1.OnValueChanged += OnPlayer1Changed;
+        player2.OnValueChanged += OnPlayer2Changed;
+        player3.OnValueChanged += OnPlayer3Changed;
+        player4.OnValueChanged += OnPlayer4Changed;
+
+        if (IsServer)
+        {
+            AssignRandomNames();
+        }
+
+        RefreshUI();
+    }
+    public override void OnNetworkDespawn()
+    {
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+
+        player1.OnValueChanged -= OnPlayer1Changed;
+        player2.OnValueChanged -= OnPlayer2Changed;
+        player3.OnValueChanged -= OnPlayer3Changed;
+        player4.OnValueChanged -= OnPlayer4Changed;
+    }
+
+    private void Kick(int slot)
+    {
+        if (!IsServer) return;
+
+        if (slotToClient.TryGetValue(slot, out ulong clientId))
+        {
+            NetworkManager.Singleton.DisconnectClient(clientId);
+        }
+    }
+
+    private List<string> firstNames = new List<string>()
+    {
+        "Charlie",
+        "Steven",
+        "Dave",
+        "William",
+        "Liam",
+        "Richard",
+        "Ballas",
+        "Quinn",
+        "Jason",
+        "Weston",
+        "Aaron",
+        "Christian",
+        "Matthew",
+        "Copper",
+        "Ethan",
+        "Marcus",
+    };
+    private List<string> lastNames = new List<string>()
+    {
+        "Kirk",
+        "Smith",
+        "Afton",
+        "Johnson",
+        "Armstrong",
+        "Miller",
+        "Balling",
+        "Brown",
+        "THE INVINCIBLE",
+    };
 
     private enum menuStates
     {
@@ -44,6 +200,7 @@ public class UI : MonoBehaviour
         menuState = menuStates.MainMenu;
         UpdateUI();
     }
+
     private void UpdateUI()
     {
         MainMenu.SetActive(false);
@@ -135,6 +292,13 @@ public class UI : MonoBehaviour
         Application.Quit();
         #endif
     }
+    //Kicking
+    public void Kickplayer2() => Kick(2);
+
+    public void Kickplayer3() => Kick(3);
+
+    public void Kickplayer4() => Kick(4);
+
     private IEnumerator LoadingTimeout()
     {
         yield return new WaitForSeconds(20f);
@@ -217,5 +381,30 @@ public class UI : MonoBehaviour
             Debug.LogError("Join failed: " + e);
             SetState(menuStates.JoinCodeMenu);
         }
+    }
+    /// <summary>
+    /// Names
+    /// </summary>
+    private string GetRandomName()
+    {
+        string first = firstNames[Random.Range(0, firstNames.Count)];
+
+        string last = lastNames[Random.Range(0, lastNames.Count)];
+
+        return first + " " + last;
+    }
+    private void AssignRandomNames()
+    {
+        player1.Value = GetRandomName();
+        player2.Value = GetRandomName();
+        player3.Value = GetRandomName();
+        player4.Value = GetRandomName();
+    }
+    private void RefreshUI()
+    {
+        foreach (var t in player1Name) t.text = player1.Value.ToString();
+        foreach (var t in player2Name) t.text = player2.Value.ToString();
+        foreach (var t in player3Name) t.text = player3.Value.ToString();
+        foreach (var t in player4Name) t.text = player4.Value.ToString();
     }
 }
