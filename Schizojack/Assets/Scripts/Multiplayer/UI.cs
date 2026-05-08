@@ -191,7 +191,6 @@ public class UI : NetworkBehaviour
         "Miller",
         "Balling",
         "Brown",
-        "Walton",
         "Cockbox",
         "Goodman",
         "White",
