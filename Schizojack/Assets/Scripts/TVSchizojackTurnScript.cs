@@ -6,6 +6,9 @@ public class TVSchizojackTurnScript : MonoBehaviour
     public GameObject[] tvScreensYTObject;
     public GameObject[] tvScreensWObject;
 
+    public AudioSource audioSource;
+    public AudioClip turnSwitchClip;
+
     public Material tvScreenYTMat;
     public Material tvScreenWMat;
 
@@ -44,6 +47,7 @@ public class TVSchizojackTurnScript : MonoBehaviour
                 tvScreensWObject[i].SetActive(i != SB._currentTurn);
             }
             _prevCurrentTurn = SB._currentTurn;
+            audioSource.PlayOneShot(turnSwitchClip);
         }
     }
 }

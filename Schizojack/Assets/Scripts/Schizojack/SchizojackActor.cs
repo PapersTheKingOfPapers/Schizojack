@@ -23,6 +23,15 @@ public class SchizojackActor : MonoBehaviour
 
     public TMP_Text monitorText;
 
+    public AudioSource audioSource;
+
+    public AudioClip[] cardTakeClips;
+    public AudioClip cardSlideClip;
+    public AudioClip[] tableHitClips;
+
+    public AudioClip[] damageClips;
+    public AudioClip dieClip;
+
     public List<Card> tempCards;
     public List<Card> tempSpecialCards;
 
@@ -53,6 +62,31 @@ public class SchizojackActor : MonoBehaviour
             animator.SetLayerWeight(0, 1);
             animator.SetLayerWeight(2, 0);
         }
+    }
+
+    public void PlayDamagedSound()
+    {
+        audioSource.PlayOneShot(damageClips[UnityEngine.Random.Range(0,damageClips.Length-1)]);
+    }
+
+    public void PlayTableHitSound()
+    {
+        audioSource.PlayOneShot(tableHitClips[UnityEngine.Random.Range(0, tableHitClips.Length - 1)]);
+    }
+
+    public void PlayCardTakeSound()
+    {
+        audioSource.PlayOneShot(cardTakeClips[UnityEngine.Random.Range(0, cardTakeClips.Length - 1)]);
+    }
+
+    public void PlayCardSlideSound()
+    {
+        audioSource.PlayOneShot(cardSlideClip);
+    }
+
+    public void PlayDieSound()
+    {
+        audioSource.PlayOneShot(dieClip);
     }
 
     public void FinishedAnimation()
