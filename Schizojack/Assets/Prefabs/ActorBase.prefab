@@ -1782,7 +1782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 633961716
+  GlobalObjectIdHash: 3890084944
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 7
@@ -6601,6 +6601,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -7596474540211684051, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3175449341112439170}
+    - targetCorrespondingSourceObject: {fileID: 377840416839736903, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3385548983873684219}
     - targetCorrespondingSourceObject: {fileID: 656561411283464088, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2167039933962163262}
@@ -6749,6 +6752,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DisableIfOwner
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!1 &7513235583107937405 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 377840416839736903, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+  m_PrefabInstance: {fileID: 7888622300683938362}
+  m_PrefabAsset: {fileID: 0}
+--- !u!81 &3385548983873684219
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513235583107937405}
+  m_Enabled: 1
 --- !u!4 &7705867125298089425 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
