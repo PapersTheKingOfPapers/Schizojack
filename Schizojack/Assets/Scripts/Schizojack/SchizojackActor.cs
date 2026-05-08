@@ -40,11 +40,16 @@ public class SchizojackActor : MonoBehaviour
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorTakeDamage") || animator.GetCurrentAnimatorStateInfo(0).IsName("ActorArmature|ActorDiePart1"))
         {
+
+            _CT.enabled = false;
+
             animator.SetLayerWeight(0, 0);
             animator.SetLayerWeight(2, 1);
         }
         else
         {
+            _CT.enabled = true;
+
             animator.SetLayerWeight(0, 1);
             animator.SetLayerWeight(2, 0);
         }

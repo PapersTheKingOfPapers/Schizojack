@@ -397,7 +397,17 @@ public class SchizojackBackend : MonoBehaviour
     {
         if (_roundFinishState == false && _roundFinishRan == false)
         {
-            if (standsInARow == _actors.Count)
+            int deadActors = 0;
+
+            foreach (Actor actor in _actors) 
+            {
+                if (actor.actorDead)
+                {
+                    deadActors++;
+                }
+            }
+
+            if (standsInARow == _actors.Count - deadActors)
             {
                 _networkBackEnd.FinishCurrentRoundRpc();
             }
@@ -635,8 +645,13 @@ public class SchizojackBackend : MonoBehaviour
     int GetClosestActorIndex(List<Actor> actors, int target)
     {
         int bestActorIndex = -1;
-        int bestDistance = int.MaxValue;
+        int bestValue = 0;
         bool tie = false;
+
+        // First determine if any actor is under/equal target
+        bool anyoneValid = actors.Any(a =>
+            a.deckValues != null &&
+            a.deckValues.Any(v => v <= target));
 
         for (int i = 0; i < actors.Count; i++)
         {
@@ -645,27 +660,44 @@ public class SchizojackBackend : MonoBehaviour
             if (actor.deckValues == null || actor.deckValues.Count == 0)
                 continue;
 
-            int actorBestDistance = int.MaxValue;
+            int actorBest;
 
-            foreach (int v in actor.deckValues)
+            if (anyoneValid)
             {
-                int distance = Math.Abs(v - target);
+                // Ignore busted actors
+                var validValues = actor.deckValues.Where(v => v <= target);
 
-                if (distance < actorBestDistance)
+                if (!validValues.Any())
+                    continue;
+
+                actorBest = validValues.Max();
+
+                if (bestActorIndex == -1 || actorBest > bestValue)
                 {
-                    actorBestDistance = distance;
+                    bestValue = actorBest;
+                    bestActorIndex = i;
+                    tie = false;
+                }
+                else if (actorBest == bestValue)
+                {
+                    tie = true;
                 }
             }
+            else
+            {
+                // Everyone busted: lowest over-target wins
+                actorBest = actor.deckValues.Min();
 
-            if (actorBestDistance < bestDistance)
-            {
-                bestDistance = actorBestDistance;
-                bestActorIndex = i;
-                tie = false;
-            }
-            else if (actorBestDistance == bestDistance)
-            {
-                tie = true;
+                if (bestActorIndex == -1 || actorBest < bestValue)
+                {
+                    bestValue = actorBest;
+                    bestActorIndex = i;
+                    tie = false;
+                }
+                else if (actorBest == bestValue)
+                {
+                    tie = true;
+                }
             }
         }
 
