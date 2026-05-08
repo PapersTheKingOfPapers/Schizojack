@@ -412,13 +412,7 @@ public class UI : NetworkBehaviour
 
         return first + " " + last;
     }
-    private void AssignRandomNames()
-    {
-        player1.Value = GetRandomName();
-        player2.Value = GetRandomName();
-        player3.Value = GetRandomName();
-        player4.Value = GetRandomName();
-    }
+
     private void RefreshUI()
     {
         string p1 = player1.Value.ToString();
