@@ -591,6 +591,7 @@ public class SchizojackBackend : MonoBehaviour
     public void UpdateGameState()
     {
         actorStateText.text = "";
+        gameStateText.text = "";
 
         var actor = _actors[_localUserNumber];
         actor.CalculateDeckValues();
