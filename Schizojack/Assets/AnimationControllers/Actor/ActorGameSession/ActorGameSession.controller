@@ -746,7 +746,7 @@ AnimatorController:
       m_Motion: {fileID: 2215431038071981689, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
     - serializedVersion: 2
       m_State: {fileID: -3988828825964929673}
-      m_Motion: {fileID: 6959454356057493736, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
+      m_Motion: {fileID: -4641530618043833695, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
     - serializedVersion: 2
       m_State: {fileID: -2158458554379555694}
       m_Motion: {fileID: 5657057842533038264, guid: 26aadee97a4cefc418ef7f32e7a0f3ed, type: 3}
