@@ -501,7 +501,7 @@ public class SchizojackBackend : MonoBehaviour
             {
                 case 0: //Reset21
                     ChangeBlackjackTarget(21);
-                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has reset the winning target to 17!");
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has reset the winning target to 21!");
                     break;
                 case 1: //To27
                     ChangeBlackjackTarget(27);
@@ -528,7 +528,7 @@ public class SchizojackBackend : MonoBehaviour
                     }
                         break;
                 case 5: //Survivor
-                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a survivor card!");
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a Survivor card!");
                     _cantDieThisRound = true;
                     break;
                 case 6: //AddBet
