@@ -601,15 +601,15 @@ public class SchizojackBackend : MonoBehaviour
         // Local actor text
         if (actor.DeckValueOverTarget(blackjackTarget))
         {
-            gameStateText.text = $"Hand is over {blackjackTarget}. Your hand is worth {valuesText}";
+            //gameStateText.text = $"Hand is over {blackjackTarget}. Your hand is worth {valuesText}";
         }
         else if (actor.DeckValueIsTarget(blackjackTarget))
         {
-            gameStateText.text = $"You win! Your hand is worth {valuesText}";
+            //gameStateText.text = $"You win! Your hand is worth {valuesText}";
         }
         else
         {
-            gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}. Current deck value target is {blackjackTarget}.";
+            //gameStateText.text = $"Your hand is worth {valuesText}, your current damage level is {actor.actorDamaged}. Current deck value target is {blackjackTarget}.";
         }
 
         if(actor.actorDead == true)
