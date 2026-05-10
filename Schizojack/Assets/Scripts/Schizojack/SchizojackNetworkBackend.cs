@@ -15,17 +15,10 @@ public class SchizojackNetworkBackend : NetworkBehaviour
 
     //public GameObject startGameButton;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        _backEnd = this.GetComponent<SchizojackBackend>();
-        /*if (!IsHost)
-        {
-            //startGameButton.SetActive(false);
-        }*/
-    }
     public override void OnNetworkSpawn()
     {
+        _backEnd = this.GetComponent<SchizojackBackend>();
+
         base.OnNetworkSpawn();
 
         NetworkManager.Singleton.OnClientDisconnectCallback += KillClientFunction;
@@ -68,6 +61,14 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         _backEnd.ResetDecks();
     }
     // Called by Client
+
+    [Rpc(SendTo.Server)]
+    public void ClientReadyServerRpc()
+    {
+        Debug.Log("Client Ready Server Rpc Called");
+        ClientReadyRpc();
+    }
+
     [Rpc(SendTo.Server)]
     public void ActorHitRequestRpc(int actorIndex)
     {
@@ -80,6 +81,14 @@ public class SchizojackNetworkBackend : NetworkBehaviour
         Debug.Log("Client Called Hit");
     }
     // Called by Server, sent to clients
+
+    [Rpc(SendTo.Everyone)]
+    public void ClientReadyRpc()
+    {
+        _backEnd.readyPlayers++;
+        Debug.Log("Ready Players:" +  _backEnd.readyPlayers);
+    }
+
     [Rpc(SendTo.NotServer)]
     public void ActorHitClientRpc(int actorIndex, int value, string suit, int image)
     {

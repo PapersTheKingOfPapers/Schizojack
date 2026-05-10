@@ -93,6 +93,8 @@ public class SchizojackBackend : MonoBehaviour
 
     [HideInInspector] public bool sessionFinished = false;
 
+    [HideInInspector] public int readyPlayers = 0;
+
     [SerializeField] private InputActionAsset _inputActionAssets;
 
     private bool _cantDieThisRound = false;
@@ -182,7 +184,7 @@ public class SchizojackBackend : MonoBehaviour
     void Update()
     {
         //runs once in the beginning
-        if(_autoStartedGame == false && IsHost() && _frontEnd.Actors.Count == NetworkManager.Singleton.ConnectedClientsList.Count)
+        if(_autoStartedGame == false && IsHost() && readyPlayers == NetworkManager.Singleton.ConnectedClientsList.Count)
         {
             _networkBackEnd.StartSessionRpc();
             _autoStartedGame = true;
@@ -465,7 +467,10 @@ public class SchizojackBackend : MonoBehaviour
     
     public void GiveTrumpCard(int actorIndex, int type)
     {
-        _actors[actorIndex].actorSpecialDeck.Add(new Card("S", type));
+        if(_actors[actorIndex].actorSpecialDeck.Count < 8)
+        {
+            _actors[actorIndex].actorSpecialDeck.Add(new Card("S", type));
+        }
         _frontEnd.UpdateActorHands(_actors);
     }
 
@@ -496,17 +501,20 @@ public class SchizojackBackend : MonoBehaviour
             {
                 case 0: //Reset21
                     ChangeBlackjackTarget(21);
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has reset the winning target to 17!");
                     break;
                 case 1: //To27
                     ChangeBlackjackTarget(27);
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has set the winning target to 27!");
                     break;
                 case 2: //To17
                     ChangeBlackjackTarget(17);
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has set the winning target to 17!");
                     break;
                 case 3: //RoundReset
                     RoundDeckReset();
                     ChangeBlackjackTarget(21);
-                    TrumpCardReturnText($"Actor{trumpActorIndex} has restart the current round!");
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} has restart the current round!");
                     _currentTurn = 0;
                     break;
                 case 4: //Peek
@@ -514,15 +522,22 @@ public class SchizojackBackend : MonoBehaviour
                     {
                         TrumpCardReturnText($"Next card in the deck is {trumpText}.");
                     }
-                    break;
+                    else
+                    {
+                        TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a trump card!");
+                    }
+                        break;
                 case 5: //Survivor
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a survivor card!");
                     _cantDieThisRound = true;
                     break;
                 case 6: //AddBet
                     damageThisRoundAddition++;
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a Capacitor card!");
                     break;
                 case 7: //LowerBet
                     damageThisRoundAddition--;
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a Resistor card!");
                     break;
                 case 8: //CoolGuy
                     if (IsHost())
@@ -537,6 +552,7 @@ public class SchizojackBackend : MonoBehaviour
                             }
                         }
                     }
+                    TrumpCardReturnText($"{_frontEnd.Actors[trumpActorIndex].actorName} used a \"Really good friend, he's my bestes of friends, and he's a really cool guy\" card!");
                     break;
             }
             standsInARow = 0;
@@ -564,7 +580,7 @@ public class SchizojackBackend : MonoBehaviour
     public void SessionOver(int winnerIndex)
     {
         sessionFinished = true;
-        gameStateText.text = $"Actor{winnerIndex} is the winner and last man standing! Session is over. Please contact event hoster to restart game.";
+        gameStateText.text = $"{_frontEnd.Actors[winnerIndex].actorName} is the winner and last man standing! Session is over. Please contact event hoster to restart game. (Quit button is not implimented yet while you're dead. Alt+F4 is currently the only way out.)";
     }
 
     public void ChangeBlackjackTarget(int newTarget)
@@ -598,7 +614,7 @@ public class SchizojackBackend : MonoBehaviour
 
         if(actor.actorDead == true)
         {
-            gameStateText.text = $"You are dead. Enjoy the afterlife.";
+            gameStateText.text = $"You are dead. Enjoy the afterlife. (Quit button is not implimented yet while you're dead. Alt+F4 is currently the only way out.)";
         }
 
         // Debug text above screen
@@ -606,11 +622,11 @@ public class SchizojackBackend : MonoBehaviour
         {
             _actors[i].CalculateDeckValues();
             string actorValues = string.Join("/", _actors[i].deckValues);
+            _frontEnd.Actors[i].monitorText.text = $"Name: {_frontEnd.Actors[i].actorName}\r\nDamaged: {_actors[i].actorDamaged}\r\nBet: {damageThisRound}\r\nTarget: {blackjackTarget}\r\nDeck Values: {actorValues}\r\n";
             if (_actors[i].actorDead == true)
             {
-                _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nAlive: No\r\nDead: Yes\r\nTurn: {_currentTurn}";
+                _frontEnd.Actors[i].monitorText.text = $"Name: {_frontEnd.Actors[i].actorName}\r\nDamaged: {_actors[i].actorDamaged}\r\nAlive: No\r\nDead: Yes\r\n";
             }
-            _frontEnd.Actors[i].monitorText.text = $"Damaged: {_actors[i].actorDamaged}\r\nBet: {damageThisRound}\r\nTarget: {blackjackTarget}\r\nTurn: {_currentTurn}\r\nDeck Value: {actorValues}\r\n";
             actorStateText.text += $"| Actor {i + 1}'s Hand Value: {actorValues} |";
         }
     }

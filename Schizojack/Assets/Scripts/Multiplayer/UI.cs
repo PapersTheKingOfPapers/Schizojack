@@ -35,10 +35,12 @@ public class UI : NetworkBehaviour
 
     private Coroutine loadingTimeoutCoroutine;
 
-    private NetworkVariable<FixedString64Bytes> player1 = new NetworkVariable<FixedString64Bytes>();
-    private NetworkVariable<FixedString64Bytes> player2 = new NetworkVariable<FixedString64Bytes>();
-    private NetworkVariable<FixedString64Bytes> player3 = new NetworkVariable<FixedString64Bytes>();
-    private NetworkVariable<FixedString64Bytes> player4 = new NetworkVariable<FixedString64Bytes>();
+    public PlayerNameTransferer PlayerNameTransferer;
+
+    public NetworkVariable<FixedString64Bytes> player1 = new NetworkVariable<FixedString64Bytes>();
+    public NetworkVariable<FixedString64Bytes> player2 = new NetworkVariable<FixedString64Bytes>();
+    public NetworkVariable<FixedString64Bytes> player3 = new NetworkVariable<FixedString64Bytes>();
+    public NetworkVariable<FixedString64Bytes> player4 = new NetworkVariable<FixedString64Bytes>();
 
     private Dictionary<ulong, int> clientToSlot = new();
     private Dictionary<int, ulong> slotToClient = new();
@@ -334,6 +336,11 @@ public class UI : NetworkBehaviour
     {
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost)
         {
+            PlayerNameTransferer.player1.Value = player1.Value;
+            PlayerNameTransferer.player2.Value = player2.Value;
+            PlayerNameTransferer.player3.Value = player3.Value;
+            PlayerNameTransferer.player4.Value = player4.Value;
+
             NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }
     }

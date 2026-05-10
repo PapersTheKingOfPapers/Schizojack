@@ -25,6 +25,8 @@ public class SchizojackActor : MonoBehaviour
 
     public AudioSource audioSource;
 
+    public string actorName;
+
     public AudioClip[] cardTakeClips;
     public AudioClip cardSlideClip;
     public AudioClip[] tableHitClips;
